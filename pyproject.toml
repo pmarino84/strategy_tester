@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "strategy_tester"
+version = "0.0.1"
+authors = [
+  { name="Pietro Marino", email="pietro.marino_84@hotmail.it" },
+]
+description = "A tool to simplify backtesing and/or optimization of your trading strategy"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+keywords=[
+  "algo",
+  "algorithmic",
+  "ashi",
+  "backtest",
+  "backtesting",
+  "bitcoin",
+  "bokeh",
+  "bonds",
+  "candle",
+  "candlestick",
+  "cboe",
+  "chart",
+  "cme",
+  "commodities",
+  "crash",
+  "crypto",
+  "currency",
+  "doji",
+  "drawdown",
+  "equity",
+  "etf",
+  "ethereum",
+  "exchange",
+  "finance",
+  "financial",
+  "forecast",
+  "forex",
+  "fund",
+  "futures",
+  "fx",
+  "fxpro",
+  "gold",
+  "heiken",
+  "historical",
+  "indicator",
+  "invest",
+  "investing",
+  "investment",
+  "macd",
+  "market",
+  "mechanical",
+  "money",
+  "oanda",
+  "ohlc",
+  "ohlcv",
+  "order",
+  "price",
+  "profit",
+  "quant",
+  "quantitative",
+  "rsi",
+  "silver",
+  "simulation",
+  "stocks",
+  "strategy",
+  "ticker",
+  "trader",
+  "trading",
+  "tradingview",
+  "usd",
+]
+dependencies = [
+  "numpy>=1.23.5",
+  "pandas>=2.0.1",
+  "pandas_ta>=0.3.14b0",
+  "python-telegram-bot>=21.5",
+  "Backtesing>=0.3.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/pmarino84/strategy_tester"
+Issues = "https://github.com/pmarino84/strategy_tester/issues"

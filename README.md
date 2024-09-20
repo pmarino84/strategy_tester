@@ -1,0 +1,16 @@
+# Strategy tester
+
+A tool to simplify backtesing and/or optimization of your trading strategy.
+
+## ByBit
+
+perpetual commission:
+  
+  1. maker: 0.0200%
+  2. taker: 0.0550%
+
+## Development
+
+Package build with [Hatch](https://hatch.pypa.io/latest/why/)
+
+Follow the official [instructions](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
