@@ -14,3 +14,10 @@ perpetual commission:
 Package build with [Hatch](https://hatch.pypa.io/latest/why/)
 
 Follow the official [instructions](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+
+How tu use virtual environment:
+
+- python3 -m venv .venv
+- source .venv/bin/activate
+- pip install -r requirements.txt
+- deactivate

@@ -5,7 +5,7 @@ _version.py
 
 *.egg-info
 .eggs/*
-__pycache__/*
+__pycache__
 dist/*
 
 .coverage
@@ -21,3 +21,5 @@ doc/build/*
 *~*
 
 .venv/
+
+example/
