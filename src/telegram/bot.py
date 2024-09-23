@@ -10,7 +10,8 @@ class TelegramBot:
   async def send_message(self, chat_id: Union[int, str], text: str):
     try:
       await self.bot.send_message(chat_id=chat_id, text=text)
-      print(f"Message `{text}`successfully sent to chat {chat_id}")
+      # print(f"Message `{text}`successfully sent to chat {chat_id}")
+      print(f"Message successfully sent to chat {chat_id}")
     except Exception as ex:
       # print(f"Failed to send message `{text}` to chat {chat_id}: {ex}")
       raise TelegramError(f"Failed to send message `{text}` to chat {chat_id}")

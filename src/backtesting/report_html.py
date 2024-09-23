@@ -2,7 +2,7 @@ import json
 import base64
 import math
 import pandas as pd
-from ..pipeline import Context
+from ..pipeline.context import Context
 
 def flatten_list(matrix):
   flat_list = []
