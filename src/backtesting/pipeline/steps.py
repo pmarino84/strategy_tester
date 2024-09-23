@@ -1,22 +1,47 @@
+import asyncio
 import os
+from typing import Optional
 import pandas as pd
-from ..pipeline import pipe, Context
-from .backtest import run_backtest
-from .saving import save_backtest_results
-from ..metrics import get_entries_by_hour, get_entries_by_dayofweek, get_entries_by_month
-from ..metrics import get_profits_losses_by_hour, get_profits_losses_by_dayofweek, get_profits_losses_by_month
-from ..metrics import get_profits_by_time_opened, get_losses_by_time_opened
-from ..metrics import get_profits_losses_mean_by_hour, get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_month
-from ..metrics import get_profits_losses_sum_by_hour, get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_month
-from ..metrics import save_metrics, metrics_to_pdf
-from .report_html import report_html as save_report_html
-from ..broker import BrokerParams, BrokerParamsBuilder
+
+from ...backtesting.backtest import run_backtest
+from ...backtesting.saving import save_backtest_results
+from ...broker import BrokerParams
+from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
+from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
+from ...metrics.profits_losses_by_bar_opened import get_losses_by_time_opened, get_profits_by_time_opened
+from ...metrics.profits_losses_mean import get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_hour, get_profits_losses_mean_by_month
+from ...metrics.profits_losses_sum import get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_hour, get_profits_losses_sum_by_month
+from ...metrics.report_pdf import metrics_to_pdf
+from ...metrics.save import save_metrics
+from ...pipeline.context import Context
+from ...telegram.bot import TelegramBot
+from ..report_html import report_html as save_report_html
+
+def get_add_asset_name(asset_name: str):
+  def add_asset_name(context: Context):
+    context.asset_name = asset_name
+    return context
+  return add_asset_name
+
+def get_add_strategy_name(strategy_name: str):
+  def add_strategy_name(context: Context):
+    context.strategy_name = strategy_name
+    return context
+  return add_strategy_name
 
 def get_add_broker_params(broker_params: BrokerParams):
   def add_broker_params(context: Context):
     context.broker_params = broker_params
     return context
   return add_broker_params
+
+def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
+  def add_telegram_bot(context: Context):
+    if bot_token and chat_id:
+      context.telegram_chat_id = chat_id
+      context.telegram_bot = TelegramBot(bot_token)
+    return context
+  return add_telegram_bot
 
 def strategy_backtest(context: Context):
   stats, bt = run_backtest(
@@ -161,35 +186,17 @@ def save_metrics_result_to_pdf(context: Context):
         f"{context.result_folder}/metrics.pdf")
   return context
 
-def create_report_html_fn(strategy_name: str = None):
+def get_report_html_fn(strategy_name: str = None):
   def report_html(context: Context):
     save_report_html(context, context.result_folder, strategy_name=strategy_name)
     return context
   return report_html
 
-# TODO: i parametri per il broker meglio passarli come dictionary,
-#       anche a create_strategy_backtest ed run_backtest
-#       sarà poi run_backtest ad usarli nella maniera corretta
-# TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
-# TODO: sistemare le funzioni che salvano i report in pdf/html nel caso non ci siano profitti/perdite si rompe tutto
-def create_standar_backtest_pipeline(load_data,
-                                    create_strategy,
-                                    results_folder_path,
-                                    strategy_name: str = None,
-                                    broker_params: BrokerParams = BrokerParamsBuilder().build()):
-  return pipe(
-    load_data,
-    create_strategy,
-    get_add_broker_params(broker_params),
-    strategy_backtest,
-    copy_trades_table,
-    calc_metrics_step_1_of_5,
-    calc_metrics_step_2_of_5,
-    calc_metrics_step_3_of_5,
-    calc_metrics_step_4_of_5,
-    calc_metrics_step_5_of_5,
-    get_create_results_folder_fn(results_folder_path),
-    save_backtest_result,
-    save_metrics_result,
-    save_metrics_result_to_pdf,
-    create_report_html_fn(strategy_name))
+def send_report_to_telegram_chat(context: Context):
+  if context.telegram_bot:
+    asset_name = context.asset_name or "N/A"
+    strategy_name = context.strategy_name or context.strategy.__name__
+    # https://stackoverflow.com/questions/55647753/call-async-function-from-sync-function-while-the-synchronous-function-continues
+    async def notify():
+      await context.telegram_bot.send_message(context.telegram_chat_id, f"{asset_name} {strategy_name} strategy backtest finished")
+    asyncio.run(notify())
