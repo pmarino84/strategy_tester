@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 import os
 from typing import Optional
 import pandas as pd
@@ -100,26 +101,18 @@ def calc_metrics_step_5_of_5(context: Context):
   context.metrics["losses_by_time_opened"] = get_losses_by_time_opened(trades)
   return context
 
-def strategy_params_to_file_suffix(params: dict):
-  file_suffix = ""
-  for param_name in params:
-    value = params[param_name]
-    if isinstance(value, pd.Timedelta):
-      value = value.isoformat()
-    formatted = f"{param_name}={value}"
-    if file_suffix == "":
-      file_suffix = formatted
-    else:
-      file_suffix = f"{file_suffix}|{formatted}"
-  file_suffix = f"params=[{file_suffix}]"
-  return file_suffix
-
-def broker_params_to_folder_name(params: BrokerParams):
-  return f"broker_[cash={params.cash}|commission={params.commission}|margin={params.margin}|trade_on_close={params.trade_on_close}|hedging={params.hedging}|exclusive_orders={params.exclusive_orders}]"
+def format_current_datetime():
+    current_datetime = datetime.now()
+    year = str(current_datetime.year)
+    month = str(current_datetime.month).rjust(2, "0")
+    day = str(current_datetime.day).rjust(2, "0")
+    hour = str(current_datetime.hour).rjust(2, "0")
+    minute = str(current_datetime.minute).rjust(2, "0")
+    return f"{year}{month}{day}{hour}{minute}"
 
 def get_create_results_folder_fn(parent_folder: str):
   def create_results_folder(context: Context):
-    results_folder_path = f"{parent_folder}/{broker_params_to_folder_name(context.broker_params)}/{strategy_params_to_file_suffix(context.get_strategy_params())}"
+    results_folder_path = f"{parent_folder}/{format_current_datetime()}"
     context.result_folder = results_folder_path
     if not os.path.exists(results_folder_path):
       os.makedirs(results_folder_path)
@@ -200,3 +193,31 @@ def send_report_to_telegram_chat(context: Context):
     async def notify():
       await context.telegram_bot.send_message(context.telegram_chat_id, f"{asset_name} {strategy_name} strategy backtest finished")
     asyncio.run(notify())
+
+def save_params_as_text(context: Context):
+  parent_folder = context.result_folder
+  params = context.get_strategy_params()
+  max_length = max(len(key) for key in params.keys())
+  text = f"{context.strategy_name or context.strategy.__name__} params:"
+  for param_name, param_value in params.items():
+    key = param_name.ljust(max_length, ' ')
+    value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
+    text += f"\n{key} = {value}"
+
+  with open(f"{parent_folder}/params.txt", encoding="utf-8", mode="w+") as file:
+    file.write(text)
+  return context
+
+def save_broker_params(context: Context):
+  parent_folder = context.result_folder
+  params = context.broker_params
+  text = "Broker params:"
+  text += f"\ncash             = {params.cash}"
+  text += f"\ncommission       = {params.commission}"
+  text += f"\nmargin           = {params.margin}"
+  text += f"\ntrades_on_close  = {params.trade_on_close}"
+  text += f"\nhedging          = {params.hedging}"
+  text += f"\nexclusive_orders = {params.exclusive_orders}"
+  with open(f"{parent_folder}/broker_params.txt", encoding="utf-8", mode="w+") as file:
+    file.write(text)
+  return context

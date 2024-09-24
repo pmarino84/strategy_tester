@@ -27,8 +27,9 @@ def pipe(*jobs):
             try:
               async def notify():
                 await context.telegram_bot.send_message(context.telegram_chat_id, message)
-                asyncio.run(notify())              
+              asyncio.run(notify())
             except:
+              print("Can't send error messaget to Telegram chat")
               traceback.print_exc()
           break
       return context

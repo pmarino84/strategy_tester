@@ -21,3 +21,8 @@ How to use virtual environment:
 - source .venv/bin/activate
 - pip install -r requirements.txt
 - deactivate
+
+## TODO
+
+For commits use [conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) standar.
+Add Github Actions to the workflow.
