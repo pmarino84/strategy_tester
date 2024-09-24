@@ -1,3 +1,4 @@
+import asyncio
 import traceback
 from .context import Context
 
@@ -24,7 +25,9 @@ def pipe(*jobs):
             message = f"Failed to test strategy {strategy_name} with asset {asset_name} Error:\n {stack_trace}"
             print(f"Send notification error for asset {asset_name} to chat id `{context.telegram_chat_id}`")
             try:
-              context.telegram_bot.send_message(context.telegram_chat_id, message)
+              async def notify():
+                await context.telegram_bot.send_message(context.telegram_chat_id, message)
+                asyncio.run(notify())              
             except:
               traceback.print_exc()
           break

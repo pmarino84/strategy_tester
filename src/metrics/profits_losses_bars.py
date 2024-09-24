@@ -1,9 +1,16 @@
 import pandas as pd
-from .utils import _assert_offset_values, _resample_offset_to_field_name
+from .utils import assert_offset_values, resample_offset_to_field_name
 
 def _get_profits_losses_bars(data_pnl: pd.Series, offset: str):
-  _assert_offset_values(offset)
-  field_name = _resample_offset_to_field_name(offset)
+  if data_pnl.empty:
+    return pd.DataFrame({
+    "profits": [],
+    "losses": [],
+  })
+
+  assert_offset_values(offset)
+  
+  field_name = resample_offset_to_field_name(offset)
   losses = data_pnl[data_pnl < 0].resample(offset).sum()
   losses = pd.DataFrame(losses)
   if field_name == "hour":
