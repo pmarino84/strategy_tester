@@ -1,11 +1,11 @@
-import asyncio
 import os
-from typing import Optional
 from dotenv import dotenv_values
 from backtesting import Strategy
 import pytest
 
-from ..telegram.bot import TelegramBot
+from src.broker_params import BrokerParamsBuilder
+
+from ..backtesting.pipeline.steps import get_add_asset_name, get_add_strategy_name, get_add_telegram_bot, get_add_broker_params
 from ..pipeline.context import Context
 from ..pipeline.pipe import pipe
 
@@ -13,22 +13,14 @@ ENV = dotenv_values(f"{os.getcwd()}/.env")
 
 ASSET_NAME = "BTCUSDT"
 
-def set_asset_name(context: Context):
-  context.asset_name = ASSET_NAME
-  return context
-
 def test_set_asset_name():
-  pipeline = pipe(set_asset_name)
+  pipeline = pipe(get_add_asset_name(ASSET_NAME))
   assert pipeline.run().asset_name == ASSET_NAME
 
 STRATEGY_NAME = "Swing Daily"
 
-def set_strategy_name(context: Context):
-  context.strategy_name = STRATEGY_NAME
-  return context
-
 def test_set_strategy_name():
-  pipeline = pipe(set_strategy_name)
+  pipeline = pipe(get_add_strategy_name(STRATEGY_NAME))
   assert pipeline.run().strategy_name == STRATEGY_NAME
 
 def test_nojobs_error():
@@ -50,17 +42,17 @@ def test_set_strategy():
 
 TELEGRAM_CHAT_ID = int(ENV["TELEGRAM_CHAT_ID"])
 
-def get_add_telegram_bot(bot_token: Optional[str] = None, chat_id: Optional[str] = None):
-  def add_telegram_bot(context: Context):
-    if bot_token and chat_id:
-      context.telegram_chat_id = chat_id
-      context.telegram_bot = TelegramBot(bot_token)
-    return context
-  return add_telegram_bot
-
 def test_add_telegram_bot():
   pipeline = pipe(get_add_telegram_bot(ENV["TELEGRAM_BOT_API_TOKEN"], TELEGRAM_CHAT_ID))
 
   context = pipeline.run()
 
   assert context.telegram_chat_id == TELEGRAM_CHAT_ID
+
+def test_add_broker_params():
+  broker_params = BrokerParamsBuilder().set_cash(2_000).set_margin(1/30).build()
+  pipeline = pipe(get_add_broker_params(broker_params))
+
+  context = pipeline.run()
+
+  assert context.broker_params == broker_params
