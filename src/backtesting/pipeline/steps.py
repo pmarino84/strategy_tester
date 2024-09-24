@@ -5,7 +5,7 @@ import pandas as pd
 
 from ...backtesting.backtest import run_backtest
 from ...backtesting.saving import save_backtest_results
-from ...broker import BrokerParams
+from ...broker_params import BrokerParams
 from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
 from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
 from ...metrics.profits_losses_by_bar_opened import get_losses_by_time_opened, get_profits_by_time_opened

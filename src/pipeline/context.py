@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional, Union
 import pandas as pd
 from backtesting.backtesting import Strategy, Backtest
 from ..telegram.bot import TelegramBot
-from ..broker import BrokerParams
+from ..broker_params import BrokerParams
 
 class Context:
   asset_name: Optional[str]

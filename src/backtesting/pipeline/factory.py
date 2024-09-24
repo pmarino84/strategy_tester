@@ -2,7 +2,7 @@
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
 # TODO: sistemare le funzioni che salvano i report in pdf/html nel caso non ci siano profitti/perdite si rompe tutto
 from ...backtesting.pipeline.steps import *
-from ...broker import BrokerParams, BrokerParamsBuilder
+from ...broker_params import BrokerParams, BrokerParamsBuilder
 from ...pipeline.pipe import pipe
 
 # TODO: save report to pdf and html without metrics
