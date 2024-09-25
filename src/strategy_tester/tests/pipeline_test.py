@@ -1,5 +1,3 @@
-import os
-from dotenv import dotenv_values
 from backtesting import Strategy
 import pytest
 
@@ -7,8 +5,6 @@ from ..broker_params import BrokerParamsBuilder
 from ..backtesting.pipeline.steps import get_add_asset_name, get_add_strategy_name, get_add_telegram_bot, get_add_broker_params
 from ..pipeline.context import Context
 from ..pipeline.pipe import pipe
-
-ENV = dotenv_values(f"{os.getcwd()}/.env")
 
 ASSET_NAME = "BTCUSDT"
 
@@ -39,14 +35,12 @@ def test_set_strategy():
 
   assert pipeline.run().strategy == TheStrategy
 
-TELEGRAM_CHAT_ID = int(ENV["TELEGRAM_CHAT_ID"])
-
 def test_add_telegram_bot():
-  pipeline = pipe(get_add_telegram_bot(ENV["TELEGRAM_BOT_API_TOKEN"], TELEGRAM_CHAT_ID))
+  pipeline = pipe(get_add_telegram_bot("TELEGRAM_BOT_API_TOKEN", "TELEGRAM_CHAT_ID"))
 
   context = pipeline.run()
 
-  assert context.telegram_chat_id == TELEGRAM_CHAT_ID
+  assert context.telegram_chat_id == "TELEGRAM_CHAT_ID"
 
 def test_add_broker_params():
   broker_params = BrokerParamsBuilder().set_cash(2_000).set_margin(1/30).build()
