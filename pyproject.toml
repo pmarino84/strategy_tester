@@ -4,13 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "strategy_tester"
-version = "0.0.1"
+dynamic = ["version"]
 authors = [
   { name="Pietro Marino", email="pietro.marino_84@hotmail.it" },
 ]
 description = "A tool to simplify backtesing and/or optimization of your trading strategy"
 readme = "README.md"
 requires-python = ">=3.8"
+license = { file = "LICENSE.md" }
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
@@ -79,6 +80,7 @@ keywords=[
   "usd",
 ]
 dependencies = [
+  "matplotlib>=3.9.2",
   "numpy>=1.23.5",
   "pandas>=2.0.1",
   "pandas_ta>=0.3.14b0",
@@ -89,3 +91,18 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/pmarino84/strategy_tester"
 Issues = "https://github.com/pmarino84/strategy_tester/issues"
+
+[tool.hatch.version]
+path = "src/__version__.py"
+
+[tool.hatch.build.target.sdist]
+exclude = [
+  "/.github",
+  "/.env",
+  "/.env.*",
+  "/.venv",
+  "/.pytest_cache"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/strategy_tester"]
