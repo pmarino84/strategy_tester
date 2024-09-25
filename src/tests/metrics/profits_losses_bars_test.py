@@ -4,7 +4,7 @@ from backtesting.lib import crossover
 import pandas as pd
 import pandas_ta as ta
 
-from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
+from strategy_tester.metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
 
 class TwoEmaCross(Strategy):
   fast_ma_period = 10

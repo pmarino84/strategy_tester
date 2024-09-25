@@ -4,7 +4,7 @@ from backtesting.lib import crossover
 import pandas as pd
 import pandas_ta as ta
 
-from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
+from strategy_tester.metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
 
 class TwoEmaCross(Strategy):
   fast_ma_period = 10

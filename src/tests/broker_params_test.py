@@ -1,6 +1,6 @@
 import pytest
 
-from ..broker_params import BrokerParamsBuilder
+from strategy_tester.broker_params import BrokerParamsBuilder
 
 def test_set_cash_raise_error():
   with pytest.raises(Exception):
