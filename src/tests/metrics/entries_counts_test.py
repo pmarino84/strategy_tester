@@ -4,7 +4,7 @@ from backtesting.lib import crossover
 import pandas as pd
 import pandas_ta as ta
 
-from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
+from strategy_tester.metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
 
 class TwoEmaCross(Strategy):
   fast_ma_period = 10
@@ -30,20 +30,20 @@ trades = stats["_trades"].copy()
 trades.set_index("EntryTime", inplace = True)
 pnl = trades["PnL"]
 
-def test_get_profits_losses_by_hour_empty():
-  assert get_profits_losses_by_hour(pd.Series()).empty
+def test_get_entries_by_hour_empty():
+  assert get_entries_by_hour(pd.Series()).empty
 
-def test_get_profits_losses_by_hour_not_empty():
-  assert not get_profits_losses_by_hour(pnl).empty
+def test_get_entries_by_hour_not_empty():
+  assert not get_entries_by_hour(pnl).empty
 
-def test_get_profits_losses_by_dow_empty():
-  assert get_profits_losses_by_dayofweek(pd.Series()).empty
+def test_get_entries_by_dow_empty():
+  assert get_entries_by_dayofweek(pd.Series()).empty
 
-def test_get_profits_losses_by_dow_not_empty():
-  assert not get_profits_losses_by_dayofweek(pnl).empty
+def test_get_entries_by_dow_not_empty():
+  assert not get_entries_by_dayofweek(pnl).empty
 
-def test_get_profits_losses_by_month_empty():
-  assert get_profits_losses_by_month(pd.Series()).empty
+def test_get_entries_by_month_empty():
+  assert get_entries_by_month(pd.Series()).empty
 
-def test_get_profits_losses_by_month_not_empty():
-  assert not get_profits_losses_by_month(pnl).empty
+def test_get_entries_by_month_not_empty():
+  assert not get_entries_by_month(pnl).empty

@@ -1,6 +1,6 @@
 import pytest
 
-from ...metrics.utils import assert_offset_values, resample_offset_to_field_name
+from strategy_tester.metrics.utils import assert_offset_values, resample_offset_to_field_name
 
 def test_assert_offset_values_rais_error():
   with pytest.raises(ValueError):

@@ -1,10 +1,10 @@
 from backtesting import Strategy
 import pytest
 
-from ..broker_params import BrokerParamsBuilder
-from ..backtesting.pipeline.steps import get_add_asset_name, get_add_strategy_name, get_add_telegram_bot, get_add_broker_params
-from ..pipeline.context import Context
-from ..pipeline.pipe import pipe
+from strategy_tester.broker_params import BrokerParamsBuilder
+from strategy_tester.backtesting.pipeline.steps import get_add_asset_name, get_add_strategy_name, get_add_telegram_bot, get_add_broker_params
+from strategy_tester.pipeline.context import Context
+from strategy_tester.pipeline.pipe import pipe
 
 ASSET_NAME = "BTCUSDT"
 
