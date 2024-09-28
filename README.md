@@ -22,6 +22,12 @@ How to use virtual environment:
 - pip install -r requirements.txt
 - deactivate
 
+To create the documentations run the command:
+
+```bash
+pdoc ./src/strategy_tester/*.py -o docs --no-show-source
+```
+
 ## TODO
 
 For commits use [conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) standar, and Github Actions for automations.
