@@ -5,19 +5,33 @@ from ..telegram.bot import TelegramBot
 from ..broker_params import BrokerParams
 
 class Context:
+  """Context used by the pipeline runner to maintain the data accross all the job"""
   asset_name: Optional[str]
+  """(optional) Asset name like EURUSD, BTCUSDT"""
   strategy_name: Optional[str]
+  """(optional) your strategy name"""
   data: Optional[pd.DataFrame]
+  """Data of the asset under test"""
   strategy: Optional[Strategy]
+  """Your Backtesting.py Strategy class"""
   stats: Optional[pd.Series]
+  """Result statistics from the backtest"""
   bt: Optional[Backtest]
+  """Backtest instance"""
   histogram: Optional[pd.DataFrame]
+  """(optional) Result histogram from the optimization"""
   metrics: Dict[str, Union[pd.DataFrame, pd.Series]]
+  """(optional) Calculated metrics from statistics and/or heatmap go here"""
   custom: Dict[str, Any]
+  """Dictionary for your custom funcionality if needed"""
   result_folder: Optional[str]
+  """(optional) Where to save the report files"""
   broker_params: Optional[BrokerParams]
+  """Broker params. see `strategy_tester.broker_params.BrokerParams`."""
   telegram_chat_id: Optional[Union[str, int]]
+  """(optional) Telegram chat id"""
   telegram_bot: Optional[TelegramBot]
+  """(optional) Telegram Bot instance"""
   def __init__(self) -> None:
     self.asset_name = None
     self.strategy_name = None
@@ -33,6 +47,7 @@ class Context:
     self.telegram_bot = None
   
   def get_strategy_params(self) -> dict:
+    """Return a dictionary containing only the strategy params defined by you"""
     params = {}
     for key, value in vars(self.strategy).items():
       if not callable(value) and not key.startswith("__") and not key.startswith("_"):
