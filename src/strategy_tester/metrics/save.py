@@ -8,6 +8,32 @@ def save_metrics(entries_bars_by_hour: pd.DataFrame, entries_bars_by_dow: pd.Dat
                 profits_losses_sum_by_hour: pd.Series, profits_losses_sum_by_dow: pd.Series, profits_losses_sum_by_month: pd.Series,
                 profits_by_time_opened: pd.DataFrame, losses_by_time_opened: pd.DataFrame,
                 parent_folder:str, file_suffix = ""):
+  """
+  Save metrics as separated csv.
+
+  `entris_bars_by_hour` entries by hour metric.\n
+  `entris_bars_by_dow` entries by day of week metric.\n
+  `entris_bars_by_month` entries by month metric.\n
+
+  `profits_losses_by_hour` profits/losses by hour metric.\n
+  `profits_losses_by_dow` profits/losses by day of week metric.\n
+  `profits_losses_by_month` profits/losses by month metric.\n
+
+  `profits_losses_mean_by_hour` mean of profits and losses by hour metric.\n
+  `profits_losses_mean_by_dow` mean of profits and losses by day of week metric.\n
+  `profits_losses_mean_by_month` mean of profits and losses by month metric.\n
+
+  `profits_losses_sum_by_hour` sum of profits and losses by hour metric.\n
+  `profits_losses_sum_by_dow` sum of profits and losses by day of week metric.\n
+  `profits_losses_sum_by_month` sum of profits and losses by month metric.\n
+
+  `profits_by_time_opened` profits by bar count metric.\n
+  `losses_by_time_opened` losses by bar count metric.\n
+
+  `parent_folder` folder where to save the csv.\n
+  
+  `file_suffix` optional file suffix to customize the file name.\n
+  """
   file_suffix = _create_file_suffix(file_suffix)
   entries_bars_by_hour_filename = f"{parent_folder}/entries_by_hour{file_suffix}.csv"
   entries_bars_by_dow_filename = f"{parent_folder}/entries_by_dow{file_suffix}.csv"

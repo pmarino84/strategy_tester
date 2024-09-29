@@ -3,4 +3,4 @@
   :end-before: Development
 """
 
-__all__ = ["pipeline", "telegram", "broker_params"]
+__all__ = ["metrics", "pipeline", "telegram", "broker_params"]
