@@ -1,5 +1,6 @@
 """
 .. include:: ../../README.md
+  :end-before: Development
 """
 
-__all__ = ["broker_params", "pipeline"]
+__all__ = ["pipeline", "telegram", "broker_params"]
