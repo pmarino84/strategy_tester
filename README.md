@@ -25,7 +25,8 @@ How to use virtual environment:
 To create the documentations run the command:
 
 ```bash
-pdoc ./src/strategy_tester/*.py -o docs --no-show-source
+cd src
+pdoc strategy_tester -o ../docs --no-show-source
 ```
 
 ## TODO
