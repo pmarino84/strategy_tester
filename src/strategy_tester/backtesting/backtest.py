@@ -2,15 +2,12 @@ from typing import Type, Tuple
 import pandas as pd
 from backtesting import Backtest, Strategy
 
+from ..broker_params import BrokerParams
+
 def run_backtest(
     data: pd.DataFrame,
     strategy: Type[Strategy],
-    cash: float = 10_000,
-    commission: float = .0,
-    margin: float = 1.,
-    trade_on_close=False,
-    hedging=False,
-    exclusive_orders=False) -> Tuple[pd.Series, Backtest]:
+    broker_params: BrokerParams) -> Tuple[pd.Series, Backtest]:
   """
   execute the backtest of the given strategy and broker params, and return the Tuple with the statistics result and the backtest instance.\n
 
@@ -26,11 +23,11 @@ def run_backtest(
   bt = Backtest(
     data,
     strategy,
-    cash=cash,
-    commission=commission,
-    margin=margin,
-    trade_on_close=trade_on_close,
-    hedging=hedging,
-    exclusive_orders=exclusive_orders)
+    cash=broker_params.cash,
+    commission=broker_params.commission,
+    margin=broker_params.margin,
+    trade_on_close=broker_params.trade_on_close,
+    hedging=broker_params.hedging,
+    exclusive_orders=broker_params.exclusive_orders)
   stats = bt.run()
   return stats, bt
