@@ -105,7 +105,7 @@ def get_strategy_optimization(**kwargs):
       context.broker_params.trade_on_close,
       context.broker_params.hedging,
       context.broker_params.exclusive_orders,
-      kwargs=kwargs)
+      **kwargs)
     context.stats = stats
     context.heatmap = heatmap
     context.bt = bt

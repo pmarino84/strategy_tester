@@ -1,24 +1,15 @@
-from typing import Callable, Type, Tuple, Union
+from typing import Type, Tuple
 import pandas as pd
 from backtesting import Backtest, Strategy
+
+from ..optimization_params import OptimizationParams
+from ..broker_params import BrokerParams
 
 def run_optimization(
     data: pd.DataFrame,
     strategy: Type[Strategy],
-    cash: float = 10_000,
-    commission: float = .0,
-    margin: float = 1.,
-    trade_on_close=False,
-    hedging=False,
-    exclusive_orders=False,
-
-    maximize: Union[str, Callable[[pd.Series], float]] = 'SQN',
-    method: str = 'grid',
-    max_tries: Union[int, float] = None,
-    constraint: Callable[[dict], bool] = None,
-    return_heatmap: bool = False,
-    return_optimization: bool = False,
-    random_state: int = None,
+    broker_params: BrokerParams,
+    optimization_params: OptimizationParams,
 
     **kwargs) -> Tuple[pd.Series, Backtest]:
   if not kwargs:
@@ -27,19 +18,19 @@ def run_optimization(
   bt = Backtest(
     data,
     strategy,
-    cash=cash,
-    commission=commission,
-    margin=margin,
-    trade_on_close=trade_on_close,
-    hedging=hedging,
-    exclusive_orders=exclusive_orders)
+    cash=broker_params.cash,
+    commission=broker_params.commission,
+    margin=broker_params.margin,
+    trade_on_close=broker_params.trade_on_close,
+    hedging=broker_params.hedging,
+    exclusive_orders=broker_params.exclusive_orders)
   stats, heatmap = bt.optimize(
-    kwargs=kwargs,
-    maximize=maximize,
-    method=method,
-    max_tries=max_tries,
-    constraint=constraint,
-    return_heatmap=return_heatmap,
-    return_optimization=return_optimization,
-    random_state=random_state)
+    **kwargs,
+    maximize=optimization_params.maximize,
+    method=optimization_params.method,
+    max_tries=optimization_params.max_tries,
+    constraint=optimization_params.constraint,
+    return_heatmap=optimization_params.return_heatmap,
+    return_optimization=optimization_params.return_optimization,
+    random_state=optimization_params.random_state)
   return stats, heatmap, bt
