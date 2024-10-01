@@ -15,11 +15,11 @@ class Context:
   strategy: Optional[Strategy]
   """Your Backtesting.py Strategy class"""
   stats: Optional[pd.Series]
-  """Result statistics from the backtest"""
+  """Result statistics from the backtest/optimization"""
+  heatmap: Optional[pd.DataFrame]
+  """(optional) Result heatmap from the optimization"""
   bt: Optional[Backtest]
   """Backtest instance"""
-  histogram: Optional[pd.DataFrame]
-  """(optional) Result histogram from the optimization"""
   metrics: Dict[str, Union[pd.DataFrame, pd.Series]]
   """(optional) Calculated metrics from statistics and/or heatmap go here"""
   custom: Dict[str, Any]
