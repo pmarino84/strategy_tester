@@ -87,34 +87,41 @@ class OptimizationParamsBuilder:
     self.__random_state = None
   
   def set_maximize(self, maximize: Union[str, Callable[[pd.Series], float]]):
+    """se `OptimizationParams`"""
     self.__maximize = maximize
     return self
   
   def set_method(self, method: str):
+    """se `OptimizationParams`"""
     if method not in ["grid", "skopt"]:
       raise ValueError(f"method should be 'grid' or 'skopt'")
     self.__method = method
     return self
   
   def set_max_tries(self, max_tries: Union[int, float]):
+    """se `OptimizationParams`"""
     if max_tries <= 0:
       raise ValueError(F"max_tries should be greater then zero")
     self.__max_tries = max_tries
     return self
   
   def set_constraint(self, constraint: Callable[[dict], bool]):
+    """se `OptimizationParams`"""
     self.__constraint = constraint
     return self
   
   def set_return_heatmap(self, return_heatmap: bool):
+    """se `OptimizationParams`"""
     self.__return_heatmap = return_heatmap
     return self
   
   def set_return_optimization(self, return_optimization: bool):
+    """se `OptimizationParams`"""
     self.__return_optimization = return_optimization
     return self
   
   def set_random_state(self, random_state: int):
+    """se `OptimizationParams`"""
     self.__random_state = random_state
     return self
   
