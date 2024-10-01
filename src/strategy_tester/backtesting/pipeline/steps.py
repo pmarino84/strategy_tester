@@ -4,7 +4,9 @@ import os
 from typing import Optional
 import pandas as pd
 
+from ...optimization_params import OptimizationParams
 from ...backtesting.backtest import run_backtest
+from ...backtesting.optimization import run_optimization
 from ...backtesting.saving import save_backtest_results
 from ...broker_params import BrokerParams
 from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
@@ -51,6 +53,17 @@ def get_add_broker_params(broker_params: BrokerParams):
     return context
   return add_broker_params
 
+def get_add_optimization_params(optimization_params: OptimizationParams):
+  """
+  Return the function to add the given optimization params to the pipeline context
+
+  `optimization_params` params of the optimization
+  """
+  def add_optimization_params(context: Context):
+    context.optimization_params = optimization_params
+    return context
+  return add_optimization_params
+
 def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
   """
   Return the function to add the telegram bot attributes to the pipeline context.
@@ -82,6 +95,26 @@ def strategy_backtest(context: Context):
   context.stats = stats
   context.bt = bt
   return context
+
+def get_strategy_optimization(**kwargs):
+  """
+  Return the function that run the optimization and add it's results and the backtester to the pipeline context
+  """
+  def strategy_optimization(context: Context):
+    stats, heatmap, bt = run_optimization(
+      context.data,
+      context.strategy,
+      context.broker_params.cash,
+      context.broker_params.commission,
+      context.broker_params.margin,
+      context.broker_params.trade_on_close,
+      context.broker_params.hedging,
+      context.broker_params.exclusive_orders,
+      kwargs=kwargs)
+    context.stats = stats
+    context.heatmap = heatmap
+    context.bt = bt
+    return context
 
 def copy_trades_table(context: Context):
   """
