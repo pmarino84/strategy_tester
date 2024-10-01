@@ -73,12 +73,7 @@ def strategy_backtest(context: Context):
   stats, bt = run_backtest(
     context.data,
     context.strategy,
-    context.broker_params.cash,
-    context.broker_params.commission,
-    context.broker_params.margin,
-    context.broker_params.trade_on_close,
-    context.broker_params.hedging,
-    context.broker_params.exclusive_orders)
+    context.broker_params)
   context.stats = stats
   context.bt = bt
   return context
