@@ -1,6 +1,8 @@
 from typing import Any, Dict, Optional, Union
 import pandas as pd
 from backtesting.backtesting import Strategy, Backtest
+
+from ..optimization_params import OptimizationParams
 from ..telegram.bot import TelegramBot
 from ..broker_params import BrokerParams
 
@@ -28,6 +30,8 @@ class Context:
   """(optional) Where to save the report files"""
   broker_params: Optional[BrokerParams]
   """Broker params. see `strategy_tester.broker_params.BrokerParams`."""
+  optimization_params: Optional[OptimizationParams]
+  """Optimization params. see `strategy_tester.optimization_params.OptimizationParams`."""
   telegram_chat_id: Optional[Union[str, int]]
   """(optional) Telegram chat id"""
   telegram_bot: Optional[TelegramBot]
@@ -70,8 +74,9 @@ class Context:
       empty_space_count = strategy_param_key_max_length - len(key)
       result += f"\n  + {key+' '*empty_space_count}: {params[key]}"
     
-    result += f"\n+ Result folder   : {self.result_folder}"
-    result += f"\n+ Broker params   : {self.broker_params}"
-    result += f"\n+ Telegram chat ID: {self.telegram_chat_id}"
+    result += f"\n+ Result folder      : {self.result_folder}"
+    result += f"\n+ Broker params      : {self.broker_params}"
+    result += f"\n+ Optimization params: {self.optimization_params}"
+    result += f"\n+ Telegram chat ID   : {self.telegram_chat_id}"
 
     return result
