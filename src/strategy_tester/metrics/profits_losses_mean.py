@@ -21,10 +21,25 @@ def _get_profits_losses_mean(data_pnl: pd.Series, offset: str):
   return data
 
 def get_profits_losses_mean_by_hour(data_pnl: pd.Series):
+  """
+  Calculate the mean profits (or losses) by hour as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_mean(data_pnl, "H")
 
 def get_profits_losses_mean_by_dayofweek(data_pnl: pd.Series):
+  """
+  Calculate the mean profits (or losses) by day of week as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_mean(data_pnl, "D")
 
 def get_profits_losses_mean_by_month(data_pnl: pd.Series):
+  """
+  Calculate the mean profits (or losses) by month as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_mean(data_pnl, "M")

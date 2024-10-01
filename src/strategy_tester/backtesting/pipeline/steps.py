@@ -19,24 +19,46 @@ from ...telegram.bot import TelegramBot
 from ..report_html import report_html as save_report_html
 
 def get_add_asset_name(asset_name: str):
+  """
+  Return the function to add the given asset name to the pipeline context
+
+  `asset_name` name of the asset used in the strategy
+  """
   def add_asset_name(context: Context):
     context.asset_name = asset_name
     return context
   return add_asset_name
 
 def get_add_strategy_name(strategy_name: str):
+  """
+  Return the function to add the given strategy name to the pipeline context
+
+  `strategy_name` name of the strategy under backtest/optimization
+  """
   def add_strategy_name(context: Context):
     context.strategy_name = strategy_name
     return context
   return add_strategy_name
 
 def get_add_broker_params(broker_params: BrokerParams):
+  """
+  Return the function to add the given broker params to the pipeline context
+
+  `broker_params` params of the broker
+  """
   def add_broker_params(context: Context):
     context.broker_params = broker_params
     return context
   return add_broker_params
 
 def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
+  """
+  Return the function to add the telegram bot attributes to the pipeline context.
+  If you don't pass anything the function only return the context
+
+  `bot_token` telegram bot token
+  `chat_id` telegram chat id
+  """
   def add_telegram_bot(context: Context):
     if bot_token and chat_id:
       context.telegram_chat_id = chat_id
@@ -45,6 +67,9 @@ def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
   return add_telegram_bot
 
 def strategy_backtest(context: Context):
+  """
+  Run the backtest and add the statistics result and the backtester to the pipeline context
+  """
   stats, bt = run_backtest(
     context.data,
     context.strategy,
@@ -59,6 +84,10 @@ def strategy_backtest(context: Context):
   return context
 
 def copy_trades_table(context: Context):
+  """
+  Copy the trades table from backtest statistics result to the pipeline context.
+  Before, convert "EntryTime" and "ExitTime" columns to `pd.Datetime` type and add the column "BarCount" to simplify some metrics calculations.
+  """
   trades = context.stats["_trades"].copy()
   trades["EntryTime"] = pd.to_datetime(trades["EntryTime"])
   trades["ExitTime"] = pd.to_datetime(trades["ExitTime"])
@@ -68,6 +97,9 @@ def copy_trades_table(context: Context):
   return context
 
 def calc_metrics_step_1_of_5(context: Context):
+  """
+  Calculate the profits/losses sum by hour/day of week/month and add it to the pipeline context
+  """
   trades_pnl = context.custom["trades_copy"]["PnL"]
   context.metrics["profits_losses_sum_by_hour"] = get_profits_losses_sum_by_hour(trades_pnl)
   context.metrics["profits_losses_sum_by_dow"] = get_profits_losses_sum_by_dayofweek(trades_pnl)
@@ -75,6 +107,9 @@ def calc_metrics_step_1_of_5(context: Context):
   return context
 
 def calc_metrics_step_2_of_5(context: Context):
+  """
+  Calculate the profits/losses by hour/day of week/month and add it to the pipeline context
+  """
   trades_pnl = context.custom["trades_copy"]["PnL"]
   context.metrics["profits_losses_by_hour"] = get_profits_losses_by_hour(trades_pnl)
   context.metrics["profits_losses_by_dow"] = get_profits_losses_by_dayofweek(trades_pnl)
@@ -82,6 +117,9 @@ def calc_metrics_step_2_of_5(context: Context):
   return context
 
 def calc_metrics_step_3_of_5(context: Context):
+  """
+  Calculate the entries count by hour/day of week/month and add it to the pipeline context
+  """
   trades_pnl = context.custom["trades_copy"]["PnL"]
   context.metrics["entries_by_hour"] = get_entries_by_hour(trades_pnl)
   context.metrics["entries_by_dow"] = get_entries_by_dayofweek(trades_pnl)
@@ -89,6 +127,9 @@ def calc_metrics_step_3_of_5(context: Context):
   return context
 
 def calc_metrics_step_4_of_5(context: Context):
+  """
+  Calculate the profits/losses mean by hour/day of week/month and add it to the pipeline context
+  """
   trades_pnl = context.custom["trades_copy"]["PnL"]
   context.metrics["profits_losses_mean_by_hour"] = get_profits_losses_mean_by_hour(trades_pnl)
   context.metrics["profits_losses_mean_by_dow"] = get_profits_losses_mean_by_dayofweek(trades_pnl)
@@ -96,12 +137,15 @@ def calc_metrics_step_4_of_5(context: Context):
   return context
 
 def calc_metrics_step_5_of_5(context: Context):
+  """
+  Calculate the profits/losses by bar count opened and add it to the pipeline context
+  """
   trades = context.custom["trades_copy"]
   context.metrics["profits_by_time_opened"] = get_profits_by_time_opened(trades)
   context.metrics["losses_by_time_opened"] = get_losses_by_time_opened(trades)
   return context
 
-def format_current_datetime():
+def _format_current_datetime():
     current_datetime = datetime.now()
     year = str(current_datetime.year)
     month = str(current_datetime.month).rjust(2, "0")
@@ -111,8 +155,11 @@ def format_current_datetime():
     return f"{year}{month}{day}{hour}{minute}"
 
 def get_create_results_folder_fn(parent_folder: str):
+  """
+  Return the function that create the folder where to store the result files and add it's path to the pipeline context
+  """
   def create_results_folder(context: Context):
-    results_folder_path = f"{parent_folder}/{format_current_datetime()}"
+    results_folder_path = f"{parent_folder}/{_format_current_datetime()}"
     context.result_folder = results_folder_path
     if not os.path.exists(results_folder_path):
       os.makedirs(results_folder_path)
@@ -120,10 +167,16 @@ def get_create_results_folder_fn(parent_folder: str):
   return create_results_folder
 
 def save_backtest_result(context: Context):
+  """
+  Save the backtest results on files
+  """
   save_backtest_results(context.stats, context.result_folder)
   return context
 
 def save_metrics_result(context: Context):
+  """
+  Save the calculated metrics on csv files
+  """
   profits_losses_sum_by_hour = context.metrics["profits_losses_sum_by_hour"]
   profits_losses_sum_by_dow = context.metrics["profits_losses_sum_by_dow"]
   profits_losses_sum_by_month = context.metrics["profits_losses_sum_by_month"]
@@ -152,6 +205,9 @@ def save_metrics_result(context: Context):
   return context
 
 def save_metrics_result_to_pdf(context: Context):
+  """
+  Save calculated metrics as pdf report
+  """
   profits_losses_sum_by_hour = context.metrics["profits_losses_sum_by_hour"]
   profits_losses_sum_by_dow = context.metrics["profits_losses_sum_by_dow"]
   profits_losses_sum_by_month = context.metrics["profits_losses_sum_by_month"]
@@ -179,13 +235,22 @@ def save_metrics_result_to_pdf(context: Context):
         f"{context.result_folder}/metrics.pdf")
   return context
 
+# TODO: take the strategy name from the context
 def get_report_html_fn(strategy_name: str = None):
+  """
+  Return the function that save the html report on file
+
+  `strategy_name` backtested strategy name
+  """
   def report_html(context: Context):
     save_report_html(context, context.result_folder, strategy_name=strategy_name)
     return context
   return report_html
 
 def send_report_to_telegram_chat(context: Context):
+  """
+  Send the notification to Telegram chat (if telegram bot info available) to inform the end of the pipeline
+  """
   if context.telegram_bot:
     asset_name = context.asset_name or "N/A"
     strategy_name = context.strategy_name or context.strategy.__name__
@@ -195,6 +260,9 @@ def send_report_to_telegram_chat(context: Context):
     asyncio.run(notify())
 
 def save_params_as_text(context: Context):
+  """
+  Save the strategy params on a text file
+  """
   parent_folder = context.result_folder
   params = context.get_strategy_params()
   max_length = max(len(key) for key in params.keys())
@@ -209,6 +277,9 @@ def save_params_as_text(context: Context):
   return context
 
 def save_broker_params(context: Context):
+  """
+  Save the broker params on a text file
+  """
   parent_folder = context.result_folder
   params = context.broker_params
   text = "Broker params:"

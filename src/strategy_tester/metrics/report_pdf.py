@@ -3,11 +3,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
+# TODO: spostare in appropriato file, non centra nulla con report pdf
+# TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def plot_metrics(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataFrame, entris_bars_by_month: pd.DataFrame,
                 profits_losses_by_hour: pd.DataFrame, profits_losses_by_dow: pd.DataFrame, profits_losses_by_month: pd.DataFrame,
                 profits_losses_sum_by_hour: pd.Series, profits_losses_sum_by_dow: pd.Series, profits_losses_sum_by_month: pd.Series,
                 profits_by_time_opened: pd.DataFrame, losses_by_time_opened: pd.DataFrame,
                 equity: pd.Series, statistics: pd.Series):
+  """
+  Plot statistics and metrics with the help of `matplotlib`.
+
+  `entris_bars_by_hour` entries by hour metric.\n
+  `entris_bars_by_dow` entries by day of week metric.\n
+  `entris_bars_by_month` entries by month metric.\n
+
+  `profits_losses_by_hour` profits/losses by hour metric.\n
+  `profits_losses_by_dow` profits/losses by day of week metric.\n
+  `profits_losses_by_month` profits/losses by month metric.\n
+
+  `profits_losses_sum_by_hour` sum of profits and losses by hour metric.\n
+  `profits_losses_sum_by_dow` sum of profits and losses by day of week metric.\n
+  `profits_losses_sum_by_month` sum of profits and losses by month metric.\n
+
+  `profits_by_time_opened` profits by bar count metric.\n
+  `losses_by_time_opened` losses by bar count metric.\n
+  """
   fig, axes = plt.subplot_mosaic("JJJ;KKK;ABC;DEF;GHI;LLL;MMM", figsize=(16,20))
 
   axes["J"].axis("off")
@@ -75,12 +95,41 @@ def plot_metrics(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataF
   fig.subplots_adjust(hspace=0.5)
   plt.show()
 
+# TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataFrame, entris_bars_by_month: pd.DataFrame,
               profits_losses_by_hour: pd.DataFrame, profits_losses_by_dow: pd.DataFrame, profits_losses_by_month: pd.DataFrame,
               profits_losses_sum_by_hour: pd.Series, profits_losses_sum_by_dow: pd.Series, profits_losses_sum_by_month: pd.Series,
               profits_by_time_opened: pd.DataFrame, losses_by_time_opened: pd.DataFrame,
               equity: pd.Series, statistics: pd.Series,
               file_path: str, pdf_title = "", author = "", subject = "", keyworkds = ""):
+  """
+  Save statistics and metrics as pdf.
+
+  `entris_bars_by_hour` entries by hour metric.\n
+  `entris_bars_by_dow` entries by day of week metric.\n
+  `entris_bars_by_month` entries by month metric.\n
+
+  `profits_losses_by_hour` profits/losses by hour metric.\n
+  `profits_losses_by_dow` profits/losses by day of week metric.\n
+  `profits_losses_by_month` profits/losses by month metric.\n
+
+  `profits_losses_sum_by_hour` sum of profits and losses by hour metric.\n
+  `profits_losses_sum_by_dow` sum of profits and losses by day of week metric.\n
+  `profits_losses_sum_by_month` sum of profits and losses by month metric.\n
+
+  `profits_by_time_opened` profits by bar count metric.\n
+  `losses_by_time_opened` losses by bar count metric.\n
+
+  `equity` The backtest/optimization equity curve.\n
+  `statistics` The backtest/optimization statistics result.\n
+
+  `file_path` saving file path.\n
+  
+  `pdf_title` (optional) pdf title metadata.\n
+  `author` (optional) pdf Author metadata.\n
+  `subject` (optional) pdf Subject metadata.\n
+  `keywords` (optional) pdf Keywords metadata.\n
+  """
   with PdfPages(file_path) as pdf:
     statistics_df = pd.DataFrame(statistics).copy().T
     statistics_df.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
@@ -173,8 +222,8 @@ def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.Dat
     if author != "":
       pdf_dict["Author"] = author
     if subject != "":
-      pdf_dict["Subject"] = author
+      pdf_dict["Subject"] = subject
     if keyworkds != "":
-      pdf_dict["Keywords"] = author
+      pdf_dict["Keywords"] = keyworkds
     pdf_dict["CreationDate"] = datetime.today()
     pdf_dict["ModificationDate"] = datetime.today()

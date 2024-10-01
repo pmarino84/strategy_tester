@@ -5,6 +5,7 @@ from telegram.error import TelegramError
 from .errors import HttpError
 
 def find_telegram_chat_id(chat_title: str, bot_token: str):
+  """Find the telegram chat id by it's title"""
   url = f"https://api.telegram.org/bot{bot_token}/getUpdates"
   resp = requests.get(url).json()
   if not resp["ok"]:
@@ -22,6 +23,7 @@ def find_telegram_chat_id(chat_title: str, bot_token: str):
   return list[-1]["my_chat_member"]["chat"]["id"]
 
 def notify_telegram(chat_id: Union[int, str], bot_token: str, message: str):
+  """send the message to the chat with the given chat id. You should pass also your telegram bot token"""
   if type(chat_id) == str:
     chat_id = find_telegram_chat_id(chat_id, bot_token)
   url = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&text={message}"

@@ -39,10 +39,37 @@ def _get_profits_losses_bars(data_pnl: pd.Series, offset: str):
   return unified
 
 def get_profits_losses_by_hour(data_pnl: pd.Series):
+  """
+  Aggregate profits/losses by hour as pandas DataFrame.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+
+  Return a `pd.DataFrame` with two columns:\n
+  + profits: the aggregated profits\n
+  + losses : the aggregated losses\n
+  """
   return _get_profits_losses_bars(data_pnl, "H")
 
 def get_profits_losses_by_dayofweek(data_pnl: pd.Series):
+  """
+  Aggregate profits/losses by day of week as pandas DataFrame.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+
+  Return a `pd.DataFrame` with two columns:\n
+  + profits: the aggregated profits\n
+  + losses : the aggregated losses\n
+  """
   return _get_profits_losses_bars(data_pnl, "D")
 
 def get_profits_losses_by_month(data_pnl: pd.Series):
+  """
+  Aggregate profits/losses by month as pandas DataFrame.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+
+  Return a `pd.DataFrame` with two columns:\n
+  + profits: the aggregated profits\n
+  + losses : the aggregated losses\n
+  """
   return _get_profits_losses_bars(data_pnl, "M")

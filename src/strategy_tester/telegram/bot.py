@@ -4,10 +4,13 @@ from telegram.error import TelegramError
 # from .errors import TelegramError
 
 class TelegramBot:
+  """Telegram bot class to communicate with your desired chat"""
   def __init__(self, token: str) -> None:
     self.bot = Bot(token=token)
+    """python-telegram-bot Bot instance"""
   
   async def send_message(self, chat_id: Union[int, str], text: str):
+    """send the message to the chat with the given chat id"""
     try:
       await self.bot.send_message(chat_id=chat_id, text=text)
       # print(f"Message `{text}`successfully sent to chat {chat_id}")
@@ -17,6 +20,7 @@ class TelegramBot:
       raise TelegramError(f"Failed to send message `{text}` to chat {chat_id}")
   
   async def send_document(self, chat_id: Union[int, str], file_path: str):
+    """send the document at file path to the chat with the given chat id"""
     try:
       with open(file_path, "rb") as file:
         await self.bot.send_document(chat_id=chat_id, document=InputFile(file))

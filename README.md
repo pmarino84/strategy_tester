@@ -1,6 +1,8 @@
 # Strategy tester
 
-[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
+Built with [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
+
+Documented with [pdoc](https://pdoc.dev/)
 
 A tool to simplify backtesing and/or optimization of your trading strategy.
 
@@ -13,8 +15,6 @@ perpetual commission:
 
 ## Development
 
-Package build with [Hatch](https://hatch.pypa.io/latest/why/)
-
 Follow the official [instructions](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
 How to use virtual environment:
@@ -24,7 +24,10 @@ How to use virtual environment:
 - pip install -r requirements.txt
 - deactivate
 
-## TODO
+For commits use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) standar.
 
-For commits use [conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) standar.
-Add Github Actions to the workflow.
+To create the documentations run the command:
+
+```bash
+cd src && pdoc strategy_tester -o ../docs --no-show-source
+```

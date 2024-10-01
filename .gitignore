@@ -25,3 +25,5 @@ doc/build/*
 example/
 .env
 .pytest_cache
+
+docs

@@ -21,10 +21,25 @@ def _get_profits_losses_sum_bars(data_pnl: pd.Series, offset: str):
   return data
 
 def get_profits_losses_sum_by_hour(data_pnl: pd.Series):
+  """
+  Calculate the sum of profits and losses by hour as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_sum_bars(data_pnl, "H")
 
 def get_profits_losses_sum_by_dayofweek(data_pnl: pd.Series):
+  """
+  Calculate the sum of profits and losses by day of week as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_sum_bars(data_pnl, "D")
 
 def get_profits_losses_sum_by_month(data_pnl: pd.Series):
+  """
+  Calculate the sum of profits and losses by month as pandas Series.
+
+  `data_pnl` is the trades PnL (Profits Net Loss) from backtesting/optimization statistics result
+  """
   return _get_profits_losses_sum_bars(data_pnl, "M")

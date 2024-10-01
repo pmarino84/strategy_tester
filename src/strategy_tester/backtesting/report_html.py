@@ -559,6 +559,14 @@ STYLE_CODE = """
 """
 
 def report_html(context: Context, parent_folder: str, file_suffix: str = "", strategy_name: str = None):
+  """
+  Save the result statistics and metrics as html page report.
+
+  `context` Context of the pipeline, see `strategy_tester.pipeline.context.Context`\n
+  `parent_folder` folder where to save the file\n
+  `file_suffix` file name suffix to customize it's name\n
+  `strategy_name` (optional) Name of the backtested strategy
+  """
   stats = context.stats
   equity_curve = stats["_equity_curve"]
   trades = stats["_trades"]
