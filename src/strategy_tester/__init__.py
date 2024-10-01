@@ -2,5 +2,5 @@
 .. include:: ../../README.md
   :end-before: Development
 """
-
-__all__ = ["metrics", "pipeline", "telegram", "broker_params"]
+# TODO: muovere il file __version__.py in questo modulo, non deve stare subito sotto src
+__all__ = ["backtesting", "metrics", "pipeline", "telegram", "broker_params"]

@@ -14,6 +14,33 @@ def create_backtest_pipeline(load_data,
                              broker_params: BrokerParams = BrokerParamsBuilder().build(),
                              telegram_bot_token: str = None,
                              telegram_chat_id: str = None):
+  """
+  Return the default basic pipeline to backtest a strategy.
+
+  `load_data` custom function to load data needed to backtest the strategy.
+  `create_strategy` custom function that return your Strategy class.
+  `results_folder_path` the folder where you want to store the result files.
+  `asset_name` asset used for backtest the strategy (e.g. EURUSD, BTCUSDT).
+  `strategy_name` strategy name.
+  `broker_params` params for the broker.
+  `telegram_bot_token` (optional) Telegram bot token, don't pass it if you don't want to send notification over Telegram.
+  `telegram_chat_id` (optional) Telegram chat id, don't pass it if you don't want to send notification over Telegram.
+
+  Jobs:
+  + load data with the given custom functions\n
+  + create the strategy class with the given custom functions\n
+  + add the asset name to the context\n
+  + add the strategy name to the context\n
+  + add the broker params to the context\n
+  + add the telegram bot info (if given)\n
+  + backtest the strategy\n
+  + copy the trades table from the result statistics into the context to simplify the metrics calculation\n
+  + create the result folder\n
+  + save the strategy params as text file\n
+  + save the broker params as text file\n
+  + save the backtest result on files\n
+  + send the notification to telegram\n
+  """
   return pipe(
     load_data,
     create_strategy,
@@ -39,6 +66,37 @@ def create_backtest_pipeline_with_metrics(load_data,
                                           broker_params: BrokerParams = BrokerParamsBuilder().build(),
                                           telegram_bot_token: str = None,
                                           telegram_chat_id: str = None):
+  """
+  Return the default basic pipeline added with metrics calculation to backtest a strategy.
+
+  `load_data` custom function to load data needed to backtest the strategy.
+  `create_strategy` custom function that return your Strategy class.
+  `results_folder_path` the folder where you want to store the result files.
+  `asset_name` asset used for backtest the strategy (e.g. EURUSD, BTCUSDT).
+  `strategy_name` strategy name.
+  `broker_params` params for the broker.
+  `telegram_bot_token` (optional) Telegram bot token, don't pass it if you don't want to send notification over Telegram.
+  `telegram_chat_id` (optional) Telegram chat id, don't pass it if you don't want to send notification over Telegram.
+
+  Jobs:
+  + load data with the given custom functions\n
+  + create the strategy class with the given custom functions\n
+  + add the asset name to the context\n
+  + add the strategy name to the context\n
+  + add the broker params to the context\n
+  + add the telegram bot info (if given)\n
+  + backtest the strategy\n
+  + copy the trades table from the result statistics into the context to simplify the metrics calculation\n
+  + calculate the metrics with various steps\n
+  + create the result folder\n
+  + save the strategy params as text file\n
+  + save the broker params as text file\n
+  + save the backtest result on files\n
+  + save the metrics on files\n
+  + save the metrics as pdf report\n
+  + save the html report\n
+  + send the notification to telegram\n
+  """
   return pipe(
     load_data,
     create_strategy,
