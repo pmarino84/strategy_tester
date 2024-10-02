@@ -320,3 +320,11 @@ def save_broker_params(context: Context):
   with open(f"{parent_folder}/broker_params.txt", encoding="utf-8", mode="w+") as file:
     file.write(text)
   return context
+
+def check_trades_available(context: Context):
+  """
+  Check if there is trades, if not raise an Error to interrupt the pipeline execution.
+  """
+  if context.stats["_trades"].empty:
+    raise IndexError("No trades found")
+  return context
