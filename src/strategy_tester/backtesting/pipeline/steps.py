@@ -7,7 +7,7 @@ import pandas as pd
 from ...optimization_params import OptimizationParams
 from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
-from ...backtesting.saving import save_backtest_results
+from ...backtesting.saving import save_backtest_results, save_optimization_results
 from ...broker_params import BrokerParams
 from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
 from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
@@ -91,7 +91,7 @@ def strategy_backtest(context: Context):
   context.bt = bt
   return context
 
-def get_strategy_optimization(**kwargs):
+def get_strategy_optimization(optimization_attributes: dict):
   """
   Return the function that run the optimization and add it's results and the backtester to the pipeline context
   """
@@ -99,17 +99,14 @@ def get_strategy_optimization(**kwargs):
     stats, heatmap, bt = run_optimization(
       context.data,
       context.strategy,
-      context.broker_params.cash,
-      context.broker_params.commission,
-      context.broker_params.margin,
-      context.broker_params.trade_on_close,
-      context.broker_params.hedging,
-      context.broker_params.exclusive_orders,
-      **kwargs)
+      context.broker_params,
+      context.optimization_params,
+      optimization_attributes)
     context.stats = stats
     context.heatmap = heatmap
     context.bt = bt
     return context
+  return strategy_optimization
 
 def copy_trades_table(context: Context):
   """
@@ -327,4 +324,11 @@ def check_trades_available(context: Context):
   """
   if context.stats["_trades"].empty:
     raise IndexError("No trades found")
+  return context
+
+def save_optimization_result(context: Context):
+  """
+  Save the backtest results on files
+  """
+  save_optimization_results(context.stats, context.heatmap, context.result_folder)
   return context

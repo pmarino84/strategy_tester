@@ -10,11 +10,7 @@ def run_optimization(
     strategy: Type[Strategy],
     broker_params: BrokerParams,
     optimization_params: OptimizationParams,
-
-    **kwargs) -> Tuple[pd.Series, Backtest]:
-  if not kwargs:
-    raise ValueError('Need some strategy parameters to optimize')
-  
+    optimization_attributes: dict) -> Tuple[pd.Series, Backtest]:
   bt = Backtest(
     data,
     strategy,
@@ -25,12 +21,12 @@ def run_optimization(
     hedging=broker_params.hedging,
     exclusive_orders=broker_params.exclusive_orders)
   stats, heatmap = bt.optimize(
-    **kwargs,
+    **optimization_attributes,
     maximize=optimization_params.maximize,
     method=optimization_params.method,
     max_tries=optimization_params.max_tries,
     constraint=optimization_params.constraint,
-    return_heatmap=optimization_params.return_heatmap,
-    return_optimization=optimization_params.return_optimization,
+    return_heatmap=True, #return_heatmap=optimization_params.return_heatmap,
+    return_optimization=False, #return_optimization=optimization_params.return_optimization,
     random_state=optimization_params.random_state)
   return stats, heatmap, bt

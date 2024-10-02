@@ -43,12 +43,12 @@ def create_backtest_pipeline(load_data,
   + send the notification to telegram\n
   """
   return pipe(
-    load_data,
-    create_strategy,
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
     get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
+    load_data,
+    create_strategy,
     strategy_backtest,
     copy_trades_table,
     get_create_results_folder_fn(results_folder_path),
@@ -122,18 +122,18 @@ def create_backtest_pipeline_with_metrics(load_data,
     get_report_html_fn(strategy_name),
     send_report_to_telegram_chat)
 
-def create_optimization_pipeline(load_data,
+# TODO: aggiungere quella che calcola e salva anche le metriche
+def create_optimization_pipeline(
+                                 optimization_attributes: dict,
+                                 load_data,
                                  create_strategy,
                                  results_folder_path,
                                  asset_name: str = None,
                                  strategy_name: str = None,
                                  broker_params: BrokerParams = BrokerParamsBuilder().build(),
-                                 telegram_bot_token: str = None,
-                                 telegram_chat_id: str = None,
-
                                  optimization_params: OptimizationParams = OptimizationParamsBuilder().build(),
-
-                                 **kwargs):
+                                 telegram_bot_token: str = None,
+                                 telegram_chat_id: str = None):
   return pipe(
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
@@ -142,11 +142,11 @@ def create_optimization_pipeline(load_data,
     get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
     load_data,
     create_strategy,
-    get_strategy_optimization(**kwargs),
+    get_strategy_optimization(optimization_attributes),
     check_trades_available,
     copy_trades_table,
     get_create_results_folder_fn(results_folder_path),
     save_params_as_text,
     save_broker_params,
-    save_backtest_result,
+    save_optimization_result,
     send_report_to_telegram_chat)

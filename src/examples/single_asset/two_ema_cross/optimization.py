@@ -2,18 +2,18 @@ import os
 from dotenv import dotenv_values
 
 from ....strategy_tester.broker_params import BrokerParamsBuilder
-from .pipeline import create_pipeline
+from .pipeline import create_pipeline_optimization
 
 # to execute the script past this code in the terminal:
-# python3 -m src.examples.single_asset.two_ema_cross.run
+# python3 -m src.examples.single_asset.two_ema_cross.optimization
 
 ENV = dotenv_values(f"{os.getcwd()}/.env")
 
 ASSET_NAME = "GOOG"
 
 print(f"Creating pipeline for asset {ASSET_NAME}...")
-pipeline = create_pipeline(
-  f"{os.getcwd()}/src/examples/single_asset/two_ema_cross/results/GOOG/backtest",
+pipeline = create_pipeline_optimization(
+  f"{os.getcwd()}/src/examples/single_asset/two_ema_cross/results/GOOG/optimization",
   asset_name=ASSET_NAME,
   strategy_name="Two EMA Cross Swing",
   broker_params=BrokerParamsBuilder().set_cash(10_000).set_commission(0.002).set_exclusive_orders(True).build(),

@@ -32,7 +32,7 @@ def test_set_default_params():
   assert assert_params_equal(def_params, params)
 
 def test_set_maximize_to_return_pct():
-  assert OptimizationParamsBuilder().set_maximize("ReturnPct").build().maximize == "ReturnPct"
+  assert OptimizationParamsBuilder().set_maximize("Return [%]").build().maximize == "Return [%]"
 
 def test_set_method_raise_value_error():
   with pytest.raises(ValueError):
