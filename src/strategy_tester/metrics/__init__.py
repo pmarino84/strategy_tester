@@ -19,7 +19,7 @@ The metrics that you can calculate are:\n
 
 Others helper functions are:\n
 + `plot_metrics` to plot statistics and metrics with the matplot lib, see `.report_pdf.plot_metrics`\n
-+ `metrics_to_pdf` to save statistics and metrics as pdf, see `.report_pdf.metrics_to_pdf`\n
++ `report_to_pdf` to save statistics and metrics as pdf, see `.report_pdf.report_to_pdf`\n
 + `save_metrics` to save metrics data as csv, see `.save.save_metrics`\n
 """
 
@@ -28,5 +28,5 @@ from .profits_losses_bars import get_profits_losses_by_hour, get_profits_losses_
 from .profits_losses_by_bar_opened import get_profits_by_time_opened, get_losses_by_time_opened
 from .profits_losses_mean import get_profits_losses_mean_by_hour, get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_month
 from .profits_losses_sum import get_profits_losses_sum_by_hour, get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_month
-from .report_pdf import plot_metrics, metrics_to_pdf
+from .report_pdf import plot_metrics, report_to_pdf
 from .save import save_metrics

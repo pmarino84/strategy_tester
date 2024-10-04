@@ -1,11 +1,10 @@
-import numpy as np
 import pandas_ta as ta
 from backtesting import Strategy
 from backtesting.lib import crossover
 from backtesting.test import GOOG
 
-from ....strategy_tester.optimization_params import OptimizationParamsBuilder
-from ....strategy_tester.backtesting.pipeline.factory import create_backtest_pipeline_with_metrics, create_optimization_pipeline
+from ....strategy_tester.optimization_params import OptimizationParams
+from ....strategy_tester.backtesting.pipeline.factory import create_backtest_pipeline_with_metrics, create_optimization_pipeline_with_metrics
 from ....strategy_tester.broker_params import BrokerParams
 from ....strategy_tester.pipeline.context import Context
 
@@ -58,9 +57,10 @@ def create_pipeline_optimization(
   asset_name: str,
   strategy_name: str,
   broker_params: BrokerParams,
+  optimization_params: OptimizationParams,
   telegram_bot_token: str,
   telegram_chat_id: str):
-  return create_optimization_pipeline(
+  return create_optimization_pipeline_with_metrics(
     {
       "fast_ma_period": range(10, 110, 10),
       "slow_ma_period": range(20, 210, 10),
@@ -71,6 +71,6 @@ def create_pipeline_optimization(
     asset_name=asset_name,
     strategy_name=strategy_name,
     broker_params= broker_params,
-    optimization_params=OptimizationParamsBuilder().set_maximize("Return [%]").set_max_tries(200).build(),
+    optimization_params=optimization_params,
     telegram_bot_token=telegram_bot_token,
     telegram_chat_id=telegram_chat_id)

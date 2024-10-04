@@ -1,10 +1,11 @@
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
 # TODO: sistemare le funzioni che salvano i report in pdf/html nel caso non ci siano profitti/perdite si rompe tutto
-from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
 from ...backtesting.pipeline.steps import *
 from ...broker_params import BrokerParams, BrokerParamsBuilder
+from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
 from ...pipeline.pipe import pipe
+
 
 # TODO: save report to pdf and html without metrics
 def create_backtest_pipeline(load_data,
@@ -58,7 +59,6 @@ def create_backtest_pipeline(load_data,
     send_report_to_telegram_chat)
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
-# TODO: sistemare le funzioni che salvano i report in pdf/html nel caso non ci siano profitti/perdite si rompe tutto
 def create_backtest_pipeline_with_metrics(load_data,
                                           create_strategy,
                                           results_folder_path,
@@ -118,11 +118,11 @@ def create_backtest_pipeline_with_metrics(load_data,
     save_broker_params,
     save_backtest_result,
     save_metrics_result,
-    save_metrics_result_to_pdf,
+    save_report_to_pdf,
     get_report_html_fn(strategy_name),
     send_report_to_telegram_chat)
 
-# TODO: aggiungere quella che calcola e salva anche le metriche
+# TODO: save report to pdf and html without metrics
 def create_optimization_pipeline(
                                  optimization_attributes: dict,
                                  load_data,
@@ -149,4 +149,41 @@ def create_optimization_pipeline(
     save_params_as_text,
     save_broker_params,
     save_optimization_result,
+    send_report_to_telegram_chat)
+
+# TODO: save result heatmap and add it to pdf/html report
+def create_optimization_pipeline_with_metrics(
+                                 optimization_attributes: dict,
+                                 load_data,
+                                 create_strategy,
+                                 results_folder_path,
+                                 asset_name: str = None,
+                                 strategy_name: str = None,
+                                 broker_params: BrokerParams = BrokerParamsBuilder().build(),
+                                 optimization_params: OptimizationParams = OptimizationParamsBuilder().build(),
+                                 telegram_bot_token: str = None,
+                                 telegram_chat_id: str = None):
+  return pipe(
+    get_add_asset_name(asset_name),
+    get_add_strategy_name(strategy_name),
+    get_add_broker_params(broker_params),
+    get_add_optimization_params(optimization_params),
+    get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
+    load_data,
+    create_strategy,
+    get_strategy_optimization(optimization_attributes),
+    check_trades_available,
+    copy_trades_table,
+    calc_metrics_step_1_of_5,
+    calc_metrics_step_2_of_5,
+    calc_metrics_step_3_of_5,
+    calc_metrics_step_4_of_5,
+    calc_metrics_step_5_of_5,
+    get_create_results_folder_fn(results_folder_path),
+    save_params_as_text,
+    save_broker_params,
+    save_optimization_result,
+    save_metrics_result,
+    save_report_to_pdf,
+    get_report_html_fn(strategy_name),
     send_report_to_telegram_chat)

@@ -18,7 +18,7 @@ class Context:
   """Your Backtesting.py Strategy class"""
   stats: Optional[pd.Series]
   """Result statistics from the backtest/optimization"""
-  heatmap: Optional[pd.DataFrame]
+  heatmap: Optional[pd.Series]
   """(optional) Result heatmap from the optimization"""
   bt: Optional[Backtest]
   """Backtest instance"""
@@ -42,7 +42,7 @@ class Context:
     self.data = None
     self.strategy = None
     self.stats = None
-    self.histogram = None
+    self.heatmap = None
     self.metrics = {}
     self.custom = {}
     self.result_folder = None

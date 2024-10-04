@@ -23,7 +23,8 @@ def run_optimization(
   stats, heatmap = bt.optimize(
     **optimization_attributes,
     maximize=optimization_params.maximize,
-    method=optimization_params.method,
+    # method=optimization_params.method, # TODO: da usare quando si potranno gestire i 3 risultati da bt.optimize(...
+    method="grid",
     max_tries=optimization_params.max_tries,
     constraint=optimization_params.constraint,
     return_heatmap=True, #return_heatmap=optimization_params.return_heatmap,
