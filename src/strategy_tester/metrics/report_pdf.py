@@ -121,7 +121,7 @@ def _add_heatmap(pdf: PdfPages, heatmap: pd.Series):
       first_name, second_name = df.index.names
       df = df.unstack()
       df.columns = df.columns.droplevel()
-      print(df)
+      # print(df)
       X, Y = calc_df_mesh(df)
 
       plt.figure(figsize=(16, 8))
@@ -140,7 +140,7 @@ def _add_heatmap(pdf: PdfPages, heatmap: pd.Series):
 
     fig, axes = plt.subplots(len(dataframes), 1, figsize=(16, 14))
     for i in range(len(dataframes)):
-      print(f"Histogram {i}")
+      # print(f"Histogram {i}")
       df = dataframes[i]
 
       first_name, second_name = df.index.names

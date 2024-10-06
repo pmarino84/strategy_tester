@@ -119,7 +119,7 @@ def create_backtest_pipeline_with_metrics(load_data,
     save_backtest_result,
     save_metrics_result,
     save_report_to_pdf,
-    get_report_html_fn(strategy_name),
+    save_report_to_html,
     send_report_to_telegram_chat)
 
 # TODO: save report to pdf and html without metrics
@@ -151,7 +151,6 @@ def create_optimization_pipeline(
     save_optimization_result,
     send_report_to_telegram_chat)
 
-# TODO: save result heatmap and add it to pdf/html report
 def create_optimization_pipeline_with_metrics(
                                  optimization_attributes: dict,
                                  load_data,
@@ -185,5 +184,5 @@ def create_optimization_pipeline_with_metrics(
     save_optimization_result,
     save_metrics_result,
     save_report_to_pdf,
-    get_report_html_fn(strategy_name),
+    save_report_to_html,
     send_report_to_telegram_chat)

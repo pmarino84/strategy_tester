@@ -236,17 +236,13 @@ def save_report_to_pdf(context: Context):
   report_to_pdf(f"{context.result_folder}/report.pdf", context.metrics, context.stats, context.heatmap)
   return context
 
-# TODO: take the strategy name from the context
-def get_report_html_fn(strategy_name: str = None):
+def save_report_to_html(context: Context):
   """
-  Return the function that save the html report on file
-
-  `strategy_name` backtested strategy name
+  Save the report as html
   """
-  def report_html(context: Context):
-    save_report_html(context, context.result_folder, strategy_name=strategy_name)
-    return context
-  return report_html
+  strategy_name = context.strategy_name or context.strategy.__name__
+  save_report_html(context, context.result_folder, strategy_name=strategy_name)
+  return context
 
 def send_report_to_telegram_chat(context: Context):
   """
