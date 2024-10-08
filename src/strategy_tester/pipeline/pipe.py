@@ -1,24 +1,31 @@
 import asyncio
 import traceback
+from typing import Callable
+
 from .context import Context
 
+# TODO: trovare il modo di documentare correttamente il codice di esempio
 class Pipeline:
   """
   Run the given jobs sequentially.\n\n
-  A job is a function that take the context as input, save it's result inside the context and return it for the next job e.g.:\n
 
-    def my_job(context: `strategy_tester.pipeline.Context`):\n
-      # your job code go here, save it's result inside the context\n
-      return context
+  `jobs` Job sequence. It's a function that take the context as input, save it's result inside the context and return the context for the next job e.g.:\n
+
+  def my_job(context: `strategy_tester.pipeline.context.Context`):\n
+    # your job code go here, save it's result inside the context\n
+    return context
   """
-  def __init__(self, jobs) -> None:
-    self.jobs = jobs
-    """jobs sequence"""
+  def __init__(self, jobs: list[Callable[[Context], Context]]) -> None:
+    self._jobs = jobs
 
   def run(self):
+    """
+    Execute the jobs sequence.
+    Return the resulting context.
+    """
     context = Context()
     
-    for job in self.jobs:
+    for job in self._jobs:
       try:
         print(f"Running job {job.__name__}...")
         context = job(context)
@@ -40,7 +47,7 @@ class Pipeline:
         break
     return context
 
-def pipe(*jobs):
+def pipe(*jobs: Callable[[Context], Context]):
   """
   Return the pipeline instance to manage the given jobs sequence
   """

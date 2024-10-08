@@ -8,16 +8,16 @@ import matplotlib as mpl
 
 from ..pipeline.context import Context
 
-viridis_cmap = mpl.colormaps["viridis"]
+_viridis_cmap = mpl.colormaps["viridis"]
 # x = np.linspace(0.0, 1.0, 100)
 # rgb = viridis_cmap(x)[np.newaxis, :, :3]
 # print(rgb)
-viridis_cmap_hex_colors = []
-for i in range(viridis_cmap.N):
-  rgba = viridis_cmap(i)
-  viridis_cmap_hex_colors.append(mpl.colors.rgb2hex(rgba))
+_viridis_cmap_hex_colors = []
+for i in range(_viridis_cmap.N):
+  rgba = _viridis_cmap(i)
+  _viridis_cmap_hex_colors.append(mpl.colors.rgb2hex(rgba))
 
-def flatten_list(matrix):
+def _flatten_list(matrix):
   flat_list = []
   for row in matrix:
     flat_list += row
@@ -32,7 +32,7 @@ def _dataframe_to_grouped_barchart_options(data: pd.DataFrame, title: str = None
     series.append({
       "type": "bar",
       "name": key,
-      "data": flatten_list(df.values.tolist())
+      "data": _flatten_list(df.values.tolist())
     })
 
   options = {
@@ -482,7 +482,7 @@ def _dataframe_to_heatmapchart_options(df: pd.DataFrame):
       "left": 'center',
       "bottom": '15%',
       "inRange": {
-        "color": viridis_cmap_hex_colors
+        "color": _viridis_cmap_hex_colors
       }
     },
     "series": series
@@ -499,7 +499,7 @@ def _parse_heatmap_series(heatmap: pd.Series):
   options = [_dataframe_to_heatmapchart_options(df) for df in dataframes]
   return options
 
-METHODS_SOURCE_CODE = """
+_METHODS_SOURCE_CODE = """
   function plot_echart(container, option) {
     if (container == null || option == null) return;
     const chart = echarts.init(container);
@@ -551,7 +551,7 @@ METHODS_SOURCE_CODE = """
   }
 """
 
-STYLE_CODE = """
+_STYLE_CODE = """
   html, body {
     padding: 0;
     margin : 0;
@@ -762,7 +762,7 @@ def report_html(context: Context, parent_folder: str, file_suffix: str = "", str
   data_source_code = f"window.data_source = {data_source_json};"
   data_source_code_base64 = str(base64.b64encode(data_source_code.encode())).split("'")[1]
   
-  methods_source_code_base64 = str(base64.b64encode(METHODS_SOURCE_CODE.encode())).split("'")[1]
+  methods_source_code_base64 = str(base64.b64encode(_METHODS_SOURCE_CODE.encode())).split("'")[1]
 
   html = f"""
     <!DOCTYPE html>
@@ -774,7 +774,7 @@ def report_html(context: Context, parent_folder: str, file_suffix: str = "", str
       <script type="text/javascript" src="data:text/javascript;base64,{data_source_code_base64}"></script>
       <script type="text/javascript" src="data:text/javascript;base64,{methods_source_code_base64}"></script>
       <style>
-        {STYLE_CODE}
+        {_STYLE_CODE}
       </style>
     </head>
     <body>

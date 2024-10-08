@@ -11,6 +11,16 @@ def run_optimization(
     broker_params: BrokerParams,
     optimization_params: OptimizationParams,
     optimization_attributes: dict) -> Tuple[pd.Series, Backtest]:
+  """
+  execute the optimization of the strategy.
+  Return the Tuple with the statistics, result heatmap and the backtest instance.\n
+
+  `data` data to perform the optimization\n
+  `strategy` the strategy implementation\n
+  `broker_params` Params for the broker\n
+  `optimization_params` Params for the optimization\n
+  `optimization_attributes` Strategy attributes to optimize\n
+  """
   bt = Backtest(
     data,
     strategy,

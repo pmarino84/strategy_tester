@@ -166,6 +166,7 @@ def _add_heatmap(pdf: PdfPages, heatmap: pd.Series):
 
 # TODO: aggiungere profits_losses_mean_by_hour/dow/month
 # TODO: spostare in altro modulo, non salva solo le metriche
+# TODO: passare il contesto invece di metrics, statistics e heatmap, per facilitare future modifiche
 def report_to_pdf(file_path: str, metrics: Dict[str, Union[pd.DataFrame, pd.Series]], statistics: pd.Series, heatmap: pd.Series = pd.Series(), pdf_title = "", author = "", subject = "", keyworkds = ""):
   """
   Save statistics and metrics as pdf.
