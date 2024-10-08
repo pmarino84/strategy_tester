@@ -782,7 +782,6 @@ _STYLE_CODE = """
   }
 """
 
-# https://echarts.apache.org/examples/en/editor.html?c=heatmap-cartesian
 def report_html(context: Context, parent_folder: str, file_suffix: str = "", strategy_name: str = None):
   """
   Save the result statistics and metrics as html page report.
