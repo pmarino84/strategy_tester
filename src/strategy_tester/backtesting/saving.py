@@ -59,12 +59,34 @@ def save_backtest_results(stats: pd.Series, parent_folder: str, file_suffix = ""
   Save the statistics, equity curve and trades on files.
 
   `stats` statistics `pd.Series` with equity curve and trades also\n
+  `parent_folder` folder where to save the file\n
+  `file_suffix` file name suffix to customize it's name\n
   """
   save_equity(stats, parent_folder, file_suffix)
   save_statistics_to_json(stats, parent_folder, file_suffix)
   save_statistics_to_csv(stats, parent_folder, file_suffix)
   save_trades(stats, parent_folder, file_suffix)
 
+def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
+  """
+  Save the heatmap as csv
+
+  `stats` heatmap `pd.DataFrame`\n
+  `parent_folder` folder where to save the file\n
+  `file_suffix` file name suffix to customize it's name\n
+  """
+  file_suffix = _create_file_suffix(file_suffix)
+  file_name = f"{parent_folder}/heatmap{file_suffix}.csv"
+  heatmap.to_csv(file_name)
+
 def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
-  raise NotImplementedError()
-  # save_backtest_results(stats, parent_folder, file_suffix)
+  """
+  Save the statistics, heatmap, equity curve and trades on files.
+
+  `stats` statistics `pd.Series` with equity curve and trades also\n
+  `heatmap` optimized params heatmap `pd.Series`\n
+  `parent_folder` folder where to save the file\n
+  `file_suffix` file name suffix to customize it's name\n
+  """
+  save_backtest_results(stats, parent_folder, file_suffix)
+  save_heatmap(heatmap, parent_folder, file_suffix)

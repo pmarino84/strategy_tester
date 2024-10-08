@@ -4,15 +4,17 @@ import os
 from typing import Optional
 import pandas as pd
 
+from ...optimization_params import OptimizationParams
 from ...backtesting.backtest import run_backtest
-from ...backtesting.saving import save_backtest_results
+from ...backtesting.optimization import run_optimization
+from ...backtesting.saving import save_backtest_results, save_optimization_results
 from ...broker_params import BrokerParams
 from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
 from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
 from ...metrics.profits_losses_by_bar_opened import get_losses_by_time_opened, get_profits_by_time_opened
 from ...metrics.profits_losses_mean import get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_hour, get_profits_losses_mean_by_month
 from ...metrics.profits_losses_sum import get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_hour, get_profits_losses_sum_by_month
-from ...metrics.report_pdf import metrics_to_pdf
+from ...metrics.report_pdf import report_to_pdf
 from ...metrics.save import save_metrics
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
@@ -51,6 +53,17 @@ def get_add_broker_params(broker_params: BrokerParams):
     return context
   return add_broker_params
 
+def get_add_optimization_params(optimization_params: OptimizationParams):
+  """
+  Return the function to add the given optimization params to the pipeline context
+
+  `optimization_params` params of the optimization
+  """
+  def add_optimization_params(context: Context):
+    context.optimization_params = optimization_params
+    return context
+  return add_optimization_params
+
 def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
   """
   Return the function to add the telegram bot attributes to the pipeline context.
@@ -77,6 +90,23 @@ def strategy_backtest(context: Context):
   context.stats = stats
   context.bt = bt
   return context
+
+def get_strategy_optimization(optimization_attributes: dict):
+  """
+  Return the function that run the optimization and add it's results and the backtester to the pipeline context
+  """
+  def strategy_optimization(context: Context):
+    stats, heatmap, bt = run_optimization(
+      context.data,
+      context.strategy,
+      context.broker_params,
+      context.optimization_params,
+      optimization_attributes)
+    context.stats = stats
+    context.heatmap = heatmap
+    context.bt = bt
+    return context
+  return strategy_optimization
 
 def copy_trades_table(context: Context):
   """
@@ -199,48 +229,20 @@ def save_metrics_result(context: Context):
               context.result_folder)
   return context
 
-def save_metrics_result_to_pdf(context: Context):
+def save_report_to_pdf(context: Context):
   """
   Save calculated metrics as pdf report
   """
-  profits_losses_sum_by_hour = context.metrics["profits_losses_sum_by_hour"]
-  profits_losses_sum_by_dow = context.metrics["profits_losses_sum_by_dow"]
-  profits_losses_sum_by_month = context.metrics["profits_losses_sum_by_month"]
-
-  profits_losses_by_hour = context.metrics["profits_losses_by_hour"]
-  profits_losses_by_dow = context.metrics["profits_losses_by_dow"]
-  profits_losses_by_month = context.metrics["profits_losses_by_month"]
-
-  entries_by_hour = context.metrics["entries_by_hour"]
-  entries_by_dow = context.metrics["entries_by_dow"]
-  entries_by_month = context.metrics["entries_by_month"]
-
-  # profits_losses_mean_by_hour = context.metrics["profits_losses_mean_by_hour"]
-  # profits_losses_mean_by_dow = context.metrics["profits_losses_mean_by_dow"]
-  # profits_losses_mean_by_month = context.metrics["profits_losses_mean_by_month"]
-
-  profits_by_time_opened = context.metrics["profits_by_time_opened"]
-  losses_by_time_opened = context.metrics["losses_by_time_opened"]
-
-  metrics_to_pdf(entries_by_hour, entries_by_dow, entries_by_month,
-        profits_losses_by_hour, profits_losses_by_dow, profits_losses_by_month,
-        profits_losses_sum_by_hour, profits_losses_sum_by_dow, profits_losses_sum_by_month,
-        profits_by_time_opened, losses_by_time_opened,
-        context.stats["_equity_curve"]["Equity"], context.stats,
-        f"{context.result_folder}/metrics.pdf")
+  report_to_pdf(f"{context.result_folder}/report.pdf", context.metrics, context.stats, context.heatmap)
   return context
 
-# TODO: take the strategy name from the context
-def get_report_html_fn(strategy_name: str = None):
+def save_report_to_html(context: Context):
   """
-  Return the function that save the html report on file
-
-  `strategy_name` backtested strategy name
+  Save the report as html
   """
-  def report_html(context: Context):
-    save_report_html(context, context.result_folder, strategy_name=strategy_name)
-    return context
-  return report_html
+  strategy_name = context.strategy_name or context.strategy.__name__
+  save_report_html(context, context.result_folder, strategy_name=strategy_name)
+  return context
 
 def send_report_to_telegram_chat(context: Context):
   """
@@ -286,4 +288,19 @@ def save_broker_params(context: Context):
   text += f"\nexclusive_orders = {params.exclusive_orders}"
   with open(f"{parent_folder}/broker_params.txt", encoding="utf-8", mode="w+") as file:
     file.write(text)
+  return context
+
+def check_trades_available(context: Context):
+  """
+  Check if there is trades, if not raise an Error to interrupt the pipeline execution.
+  """
+  if context.stats["_trades"].empty:
+    raise IndexError("No trades found")
+  return context
+
+def save_optimization_result(context: Context):
+  """
+  Save the backtest results on files
+  """
+  save_optimization_results(context.stats, context.heatmap, context.result_folder)
   return context

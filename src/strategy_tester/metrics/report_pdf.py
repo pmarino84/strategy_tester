@@ -1,7 +1,13 @@
 from datetime import datetime
-import pandas as pd
+from itertools import combinations
+from typing import Dict, Union
+
+from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
+
 
 # TODO: spostare in appropriato file, non centra nulla con report pdf
 # TODO: aggiungere profits_losses_mean_by_hour/dow/month
@@ -95,41 +101,107 @@ def plot_metrics(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataF
   fig.subplots_adjust(hspace=0.5)
   plt.show()
 
+
+def _add_cell_values_to_heatmap(df: pd.DataFrame, ax: Axes):
+  for i, row in df.iterrows():
+      for j, value in row.items():
+        formatted_value = round(value, 2)
+        ax.text(i, j, formatted_value, horizontalalignment="center", verticalalignment="center", color="white")
+
+def _add_heatmap(pdf: PdfPages, heatmap: pd.Series):
+  if isinstance(heatmap, pd.Series) and not heatmap.empty:
+    # print(heatmap)
+    # print(heatmap.unstack())
+    params_combinations = combinations(heatmap.index.names, 2)
+    dataframes = [heatmap.groupby(list(dimensions)).agg("mean").to_frame(name="_Value") for dimensions in params_combinations]
+
+    if len(dataframes) == 1:
+      df = dataframes[0]
+      # print(df)
+      first_name, second_name = df.index.names
+      df = df.unstack()
+      df.columns = df.columns.droplevel()
+      # print(df)
+      X, Y = calc_df_mesh(df)
+
+      plt.figure(figsize=(16, 8))
+      c = plt.pcolormesh(X, Y, df.values.T)
+      plt.colorbar(c)
+      # plt.gca().set_title(f"{first_name} x {second_name}")
+      plt.title(f"{first_name} x {second_name}")
+      plt.gca().set_xlabel(first_name)
+      plt.gca().set_ylabel(second_name)
+
+      _add_cell_values_to_heatmap(df, plt.gca())
+
+      pdf.savefig()
+      plt.close()
+      return
+
+    fig, axes = plt.subplots(len(dataframes), 1, figsize=(16, 14))
+    for i in range(len(dataframes)):
+      # print(f"Histogram {i}")
+      df = dataframes[i]
+
+      first_name, second_name = df.index.names
+      # first_levels = df.index.levels[0].to_list()
+      # first_level_min, first_level_max = min(first_levels), max(first_levels)
+      # print(f"{first_name} min, max = {first_level_min}, {first_level_max}")
+      # second_levels = df.index.levels[1].to_list()
+      # second_level_min, second_level_max = min(second_levels), max(second_levels)
+      # print(f"{second_name} min, max = {second_level_min}, {second_level_max}")
+      
+      df = df.unstack()
+      X, Y = calc_df_mesh(df)
+      c = plt.pcolormesh(X, Y, df.values.T)
+      plt.colorbar(c, ax=axes[i])
+      axes[i].set_title(f"{first_name} x {second_name}")
+      axes[i].set_xlabel(first_name)
+      axes[i].set_ylabel(second_name)
+      _add_cell_values_to_heatmap(df, axes[i])
+
+      fig.subplots_adjust(hspace=0.8)
+      pdf.savefig(fig)
+    plt.close()
+
 # TODO: aggiungere profits_losses_mean_by_hour/dow/month
-def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataFrame, entris_bars_by_month: pd.DataFrame,
-              profits_losses_by_hour: pd.DataFrame, profits_losses_by_dow: pd.DataFrame, profits_losses_by_month: pd.DataFrame,
-              profits_losses_sum_by_hour: pd.Series, profits_losses_sum_by_dow: pd.Series, profits_losses_sum_by_month: pd.Series,
-              profits_by_time_opened: pd.DataFrame, losses_by_time_opened: pd.DataFrame,
-              equity: pd.Series, statistics: pd.Series,
-              file_path: str, pdf_title = "", author = "", subject = "", keyworkds = ""):
+# TODO: spostare in altro modulo, non salva solo le metriche
+# TODO: passare il contesto invece di metrics, statistics e heatmap, per facilitare future modifiche
+def report_to_pdf(file_path: str, metrics: Dict[str, Union[pd.DataFrame, pd.Series]], statistics: pd.Series, heatmap: pd.Series = pd.Series(), pdf_title = "", author = "", subject = "", keyworkds = ""):
   """
   Save statistics and metrics as pdf.
 
-  `entris_bars_by_hour` entries by hour metric.\n
-  `entris_bars_by_dow` entries by day of week metric.\n
-  `entris_bars_by_month` entries by month metric.\n
-
-  `profits_losses_by_hour` profits/losses by hour metric.\n
-  `profits_losses_by_dow` profits/losses by day of week metric.\n
-  `profits_losses_by_month` profits/losses by month metric.\n
-
-  `profits_losses_sum_by_hour` sum of profits and losses by hour metric.\n
-  `profits_losses_sum_by_dow` sum of profits and losses by day of week metric.\n
-  `profits_losses_sum_by_month` sum of profits and losses by month metric.\n
-
-  `profits_by_time_opened` profits by bar count metric.\n
-  `losses_by_time_opened` losses by bar count metric.\n
-
-  `equity` The backtest/optimization equity curve.\n
-  `statistics` The backtest/optimization statistics result.\n
-
   `file_path` saving file path.\n
+  `metrics` calculated matrics dictionary.\n
+  `statistics` The backtest/optimization statistics result.\n
+  `heatmap` result heatmap.\n
   
   `pdf_title` (optional) pdf title metadata.\n
   `author` (optional) pdf Author metadata.\n
   `subject` (optional) pdf Subject metadata.\n
   `keywords` (optional) pdf Keywords metadata.\n
   """
+  profits_losses_sum_by_hour = metrics["profits_losses_sum_by_hour"]
+  profits_losses_sum_by_dow = metrics["profits_losses_sum_by_dow"]
+  profits_losses_sum_by_month = metrics["profits_losses_sum_by_month"]
+
+  profits_losses_by_hour = metrics["profits_losses_by_hour"]
+  profits_losses_by_dow = metrics["profits_losses_by_dow"]
+  profits_losses_by_month = metrics["profits_losses_by_month"]
+
+  entries_by_hour = metrics["entries_by_hour"]
+  entries_by_dow = metrics["entries_by_dow"]
+  entries_by_month = metrics["entries_by_month"]
+
+  # profits_losses_mean_by_hour = metrics["profits_losses_mean_by_hour"]
+  # profits_losses_mean_by_dow = metrics["profits_losses_mean_by_dow"]
+  # profits_losses_mean_by_month = metrics["profits_losses_mean_by_month"]
+
+  profits_by_time_opened = metrics["profits_by_time_opened"]
+  losses_by_time_opened = metrics["losses_by_time_opened"]
+
+  equity = statistics["_equity_curve"]["Equity"]
+
   with PdfPages(file_path) as pdf:
     statistics_df = pd.DataFrame(statistics).copy().T
     statistics_df.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
@@ -188,15 +260,15 @@ def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.Dat
 
     fig, axes = plt.subplots(3, 1, figsize=(16, 14))
     entries_color = { "entries_profits": "green", "entries_losses": "red" }
-    entris_bars_by_hour.plot.bar(ax=axes[0], color=entries_color)
+    entries_by_hour.plot.bar(ax=axes[0], color=entries_color)
     axes[0].set_title("Entries by Hour")
     axes[0].legend().remove()
     
-    entris_bars_by_dow.plot.bar(ax=axes[1], color=entries_color)
+    entries_by_dow.plot.bar(ax=axes[1], color=entries_color)
     axes[1].set_title("Entries by Day Of Week")
     axes[1].legend().remove()
     
-    entris_bars_by_month.plot.bar(ax=axes[2], color=entries_color)
+    entries_by_month.plot.bar(ax=axes[2], color=entries_color)
     axes[2].set_title("Entries by Month")
     axes[2].legend().remove()
 
@@ -216,6 +288,8 @@ def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.Dat
     pdf.savefig()
     plt.close()
 
+    _add_heatmap(pdf, heatmap)
+
     pdf_dict = pdf.infodict()
     if pdf_title != "":
       pdf_dict["Title"] = pdf_title
@@ -227,3 +301,47 @@ def metrics_to_pdf(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.Dat
       pdf_dict["Keywords"] = keyworkds
     pdf_dict["CreationDate"] = datetime.today()
     pdf_dict["ModificationDate"] = datetime.today()
+
+# reference: https://stackoverflow.com/questions/12286607/making-heatmap-from-pandas-dataframe
+def conv_index_to_bins(index):
+    """Calculate bins to contain the index values.
+    The start and end bin boundaries are linearly extrapolated from 
+    the two first and last values. The middle bin boundaries are 
+    midpoints.
+
+    Example 1: [0, 1] -> [-0.5, 0.5, 1.5]
+    Example 2: [0, 1, 4] -> [-0.5, 0.5, 2.5, 5.5]
+    Example 3: [4, 1, 0] -> [5.5, 2.5, 0.5, -0.5]"""
+    assert index.is_monotonic_increasing or index.is_monotonic_decreasing
+    # print("conv_index_to_bins index:")
+    # print(index)
+    if isinstance(index, pd.MultiIndex):
+      index = index.droplevel()
+      # print(index)
+
+    # the beginning and end values are guessed from first and last two
+    start = index[0] - (index[1]-index[0])/2
+    end = index[-1] + (index[-1]-index[-2])/2
+    # print(f"start, end = {start}, {end}")
+
+    # the middle values are the midpoints
+    middle = pd.DataFrame({'m1': index[:-1], 'p1': index[1:]})
+    middle = middle['m1'] + (middle['p1']-middle['m1'])/2
+    # print("middle:")
+    # print(middle)
+
+    if isinstance(index, pd.DatetimeIndex):
+        idx = pd.DatetimeIndex(middle).union([start,end])
+    elif isinstance(index, (pd.Index,pd.RangeIndex)):
+        idx = pd.Index(middle).union([start,end])
+    else:
+        # print('Warning: guessing what to do with index type %s' % 
+        #       type(index))
+        print(f"Warning: guessing what to do with index type {type(index)}")
+        idx = pd.Index(middle).union([start,end])
+
+    return idx.sort_values(ascending=index.is_monotonic_increasing)
+
+def calc_df_mesh(df: pd.DataFrame):
+    """Calculate the two-dimensional bins to hold the index and column values."""
+    return np.meshgrid(conv_index_to_bins(df.index.copy()), conv_index_to_bins(df.columns))
