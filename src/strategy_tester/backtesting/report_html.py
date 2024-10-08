@@ -24,6 +24,9 @@ def _flatten_list(matrix):
   return flat_list
 
 def _dataframe_to_grouped_barchart_options(data: pd.DataFrame, title: str = None):
+  if data.empty:
+    return None
+  
   x_values = data.index.map(lambda x: str(x)).to_list()
   series = []
 
@@ -54,6 +57,9 @@ def _dataframe_to_grouped_barchart_options(data: pd.DataFrame, title: str = None
   return options
 
 def _dataseries_to_stacked_barchart_options_splitted_by_zeroline(data: pd.Series, title: str = None):
+  if data.empty:
+    return None
+  
   x_values = data.index.map(lambda x: str(x)).to_list()
   series = []
 
@@ -92,6 +98,9 @@ def _dataseries_to_stacked_barchart_options_splitted_by_zeroline(data: pd.Series
   return options
 
 def _dataseries_to_linechart_options(data: pd.Series, title: str = None):
+  if data.empty:
+    return None
+  
   x_values = data.index.map(lambda x: str(x)).to_list()
   series = [{ "type": "line", "data": data.values.tolist() }]
   options = {
@@ -111,6 +120,9 @@ def _dataseries_to_linechart_options(data: pd.Series, title: str = None):
   return options
 
 def _dataframe_to_scatterchart_cartesian_options(data: pd.DataFrame, columns, title: str = None):
+  if data.empty:
+    return None
+  
   series = [{ "type": "scatter", "data": data[columns].values.tolist() }]
   options = {
     "animation": False,
@@ -126,6 +138,9 @@ def _dataframe_to_scatterchart_cartesian_options(data: pd.DataFrame, columns, ti
   return options
 
 def _dataframe_to_candlestickchart_options(ohlcv: pd.DataFrame, trades: pd.DataFrame):
+  if ohlcv.empty or trades.empty:
+    return None
+  
   df = ohlcv.copy().reset_index()
   df[df.columns[0]] = df[df.columns[0]].map(lambda x: str(x))
   dataset = df.values.tolist()
@@ -330,6 +345,9 @@ def _dataframe_to_candlestickchart_options(ohlcv: pd.DataFrame, trades: pd.DataF
 
 # histogram distribution
 def _dataframe_to_histogramchart_options(data: pd.Series, bins: int = 10, title: str = None):
+  if data.empty:
+    return None
+  
   min = data.min()
   max = data.max()
   length = max - min + 1
@@ -383,6 +401,9 @@ def _statistics_to_json(stats: pd.Series, pnl: pd.Series):
     if not key.startswith("_"):
       result[key] = _parse_data_for_json(stats.values[i])
   
+  if pnl.empty:
+    return result
+  
   profits = pnl[pnl > 0]
   losses = pnl[pnl < 0]
   profit_min = profits.min()
@@ -406,6 +427,9 @@ def _statistics_to_json(stats: pd.Series, pnl: pd.Series):
   return result
 
 def _trades_to_json(data: pd.DataFrame):
+  if data.empty:
+    return None
+  
   result = {}
 
   for key in data.columns:
@@ -491,7 +515,7 @@ def _dataframe_to_heatmapchart_options(df: pd.DataFrame):
 
 def _parse_heatmap_series(heatmap: pd.Series):
   if not isinstance(heatmap, pd.Series) or heatmap.empty:
-    return []
+    return None
   
   params_combinations = combinations(heatmap.index.names, 2)
   dataframes = [heatmap.groupby(list(dimensions)).agg("mean").to_frame(name="_Value") for dimensions in params_combinations]
@@ -548,6 +572,87 @@ _METHODS_SOURCE_CODE = """
       container.appendChild(chart_container);
       plot_echart(chart_container, option);
     });
+  }
+"""
+
+_MAIN_SCRIPT = """
+  plot_stats(document.getElementById("stats"), data_source["statistics"]);
+
+  if (data_source["equity_chart_options"]) {
+    document.getElementById("equity").classList.remove("hide");
+    plot_echart(document.getElementById("equity"), data_source["equity_chart_options"]);
+  }
+
+  if (data_source["metrics"]["profits_losses_sum_by_hour"]) {
+    document.getElementById("profits_losses_sum_by_hour").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_sum_by_hour"), data_source["metrics"]["profits_losses_sum_by_hour"]);
+  }
+
+  if (data_source["metrics"]["profits_losses_sum_by_dow"]) {
+    document.getElementById("profits_losses_sum_by_dow").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_sum_by_dow"), data_source["metrics"]["profits_losses_sum_by_dow"]);
+  }
+
+  if (data_source["metrics"]["profits_losses_sum_by_month"]) {
+    document.getElementById("profits_losses_sum_by_month").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_sum_by_month"), data_source["metrics"]["profits_losses_sum_by_month"]);
+  }
+  
+  if (data_source["metrics"]["profits_losses_by_hour"]) {
+    document.getElementById("profits_losses_by_hour").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_by_hour"), data_source["metrics"]["profits_losses_by_hour"]);
+  }
+  
+  if (data_source["metrics"]["profits_losses_by_dow"]) {
+    document.getElementById("profits_losses_by_dow").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_by_dow"), data_source["metrics"]["profits_losses_by_dow"]);
+  }
+  
+  if (data_source["metrics"]["profits_losses_by_month"]) {
+    document.getElementById("profits_losses_by_month").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_by_month"), data_source["metrics"]["profits_losses_by_month"]);
+  }
+  
+  if (data_source["metrics"]["entries_by_hour"]) {
+    document.getElementById("entries_count_by_hour").classList.remove("hide");
+    plot_echart(document.getElementById("entries_count_by_hour"), data_source["metrics"]["entries_by_hour"]);
+  }
+  
+  if (data_source["metrics"]["entries_by_dow"]) {
+    document.getElementById("entries_count_by_dow").classList.remove("hide");
+    plot_echart(document.getElementById("entries_count_by_dow"), data_source["metrics"]["entries_by_dow"]);
+  }
+  
+  if (data_source["metrics"]["entries_by_month"]) {
+    document.getElementById("entries_count_by_month").classList.remove("hide");
+    plot_echart(document.getElementById("entries_count_by_month"), data_source["metrics"]["entries_by_month"]);
+  }
+
+  if (data_source["metrics"]["profits_by_time_opened"]) {
+    document.getElementById("profits_by_time_opened").classList.remove("hide");
+    plot_echart(document.getElementById("profits_by_time_opened"), data_source["metrics"]["profits_by_time_opened"]);
+  }
+  
+  if (data_source["metrics"]["losses_by_time_opened"]) {
+    document.getElementById("losses_by_time_opened").classList.remove("hide");
+    plot_echart(document.getElementById("losses_by_time_opened"), data_source["metrics"]["losses_by_time_opened"]);
+  }
+  
+  if (data_source["metrics"]["pnl_distribution"]) {
+    document.getElementById("pnl_distribution").classList.remove("hide");
+    plot_echart(document.getElementById("pnl_distribution"), data_source["metrics"]["pnl_distribution"]);
+  }
+
+  plot_heatmaps(document.getElementById("heatmaps-container"), data_source["heatmaps"]);
+
+  if (data_source["candlestick"]) {
+    document.getElementById("candlestick-chart").classList.remove("hide");
+    plot_echart(document.getElementById("candlestick-chart"), data_source["candlestick"]);
+  }
+  
+  if (data_source["trades"]) {
+    document.getElementById("trades").classList.remove("hide");
+    plot_table(document.getElementById("trades"), data_source["trades"]);
   }
 """
 
@@ -671,6 +776,10 @@ _STYLE_CODE = """
     list-style: none;
     font-size : 22px;
   }
+
+  .hide {
+    display: none;
+  }
 """
 
 # https://echarts.apache.org/examples/en/editor.html?c=heatmap-cartesian
@@ -684,6 +793,11 @@ def report_html(context: Context, parent_folder: str, file_suffix: str = "", str
   `strategy_name` (optional) Name of the backtested strategy
   """
   stats = context.stats
+
+  if stats.empty:
+    # if there isn't statistics data also there isn't metrics, equity, heatmap...
+    return
+
   heatmap = context.heatmap
   equity_curve = stats["_equity_curve"]
   trades = stats["_trades"]
@@ -793,70 +907,45 @@ def report_html(context: Context, parent_folder: str, file_suffix: str = "", str
         </div>
 
         <div class="equity-curve">
-          <div id="equity"></div>
+          <div id="equity" class="hide"></div>
         </div>
 
         <div class="metrics">
           <div class="metrics__row">
-            <div id="profits_losses_sum_by_hour" class="metric"></div>
-            <div id="profits_losses_sum_by_dow" class="metric"></div>
-            <div id="profits_losses_sum_by_month" class="metric"></div>
+            <div id="profits_losses_sum_by_hour" class="metric hide"></div>
+            <div id="profits_losses_sum_by_dow" class="metric hide"></div>
+            <div id="profits_losses_sum_by_month" class="metric hide"></div>
           </div>
           <div class="metrics__row">
-            <div id="profits_losses_by_hour" class="metric"></div>
-            <div id="profits_losses_by_dow" class="metric"></div>
-            <div id="profits_losses_by_month" class="metric"></div>
+            <div id="profits_losses_by_hour" class="metric hide"></div>
+            <div id="profits_losses_by_dow" class="metric hide"></div>
+            <div id="profits_losses_by_month" class="metric hide"></div>
           </div>
           <div class="metrics__row">
-            <div id="entries_count_by_hour" class="metric"></div>
-            <div id="entries_count_by_dow" class="metric"></div>
-            <div id="entries_count_by_month" class="metric"></div>
+            <div id="entries_count_by_hour" class="metric hide"></div>
+            <div id="entries_count_by_dow" class="metric hide"></div>
+            <div id="entries_count_by_month" class="metric hide"></div>
           </div>
           <div class="metrics__row">
-            <div id="profits_by_time_opened" class="metric metric--big"></div>
+            <div id="profits_by_time_opened" class="metric metric--big hide"></div>
           </div>
           <div class="metrics__row">
-            <div id="losses_by_time_opened" class="metric metric--big"></div>
+            <div id="losses_by_time_opened" class="metric metric--big hide"></div>
           </div>
           <div class="metrics__row">
-            <div id="pnl_distribution" class="metric metric--big"></div>
+            <div id="pnl_distribution" class="metric metric--big hide"></div>
           </div>
         </div>
 
         <div id="heatmaps-container"></div>
 
-        <div id="candlestick-chart"></div>
+        <div id="candlestick-chart" class="hide"></div>
 
-        <div id="trades"></div>
+        <div id="trades" class="hide"></div>
       </main>
 
       <script>
-        plot_stats(document.getElementById("stats"), data_source["statistics"]);
-        
-        plot_echart(document.getElementById("equity"), data_source["equity_chart_options"]);
-
-        plot_echart(document.getElementById("profits_losses_sum_by_hour"), data_source["metrics"]["profits_losses_sum_by_hour"]);
-        plot_echart(document.getElementById("profits_losses_sum_by_dow"), data_source["metrics"]["profits_losses_sum_by_dow"]);
-        plot_echart(document.getElementById("profits_losses_sum_by_month"), data_source["metrics"]["profits_losses_sum_by_month"]);
-        
-        plot_echart(document.getElementById("profits_losses_by_hour"), data_source["metrics"]["profits_losses_by_hour"]);
-        plot_echart(document.getElementById("profits_losses_by_dow"), data_source["metrics"]["profits_losses_by_dow"]);
-        plot_echart(document.getElementById("profits_losses_by_month"), data_source["metrics"]["profits_losses_by_month"]);
-        
-        plot_echart(document.getElementById("entries_count_by_hour"), data_source["metrics"]["entries_by_hour"]);
-        plot_echart(document.getElementById("entries_count_by_dow"), data_source["metrics"]["entries_by_dow"]);
-        plot_echart(document.getElementById("entries_count_by_month"), data_source["metrics"]["entries_by_month"]);
-
-        plot_echart(document.getElementById("profits_by_time_opened"), data_source["metrics"]["profits_by_time_opened"]);
-        plot_echart(document.getElementById("losses_by_time_opened"), data_source["metrics"]["losses_by_time_opened"]);
-        
-        plot_echart(document.getElementById("pnl_distribution"), data_source["metrics"]["pnl_distribution"]);
-
-        plot_heatmaps(document.getElementById("heatmaps-container"), data_source["heatmaps"]);
-
-        plot_echart(document.getElementById("candlestick-chart"), data_source["candlestick"])
-        
-        plot_table(document.getElementById("trades"), data_source["trades"]);
+        {_MAIN_SCRIPT}
       </script>
     </body>
   """
