@@ -18,7 +18,7 @@ from ...report.pdf import report_to_pdf
 from ...metrics.save import save_metrics
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
-from ..report_html import report_html as save_report_html
+from ...report.html import report_to_html
 
 def get_add_asset_name(asset_name: str):
   """
@@ -240,8 +240,7 @@ def save_report_to_html(context: Context):
   """
   Save the report as html
   """
-  strategy_name = context.strategy_name or context.strategy.__name__
-  save_report_html(context, context.result_folder, strategy_name=strategy_name)
+  report_to_html(context)
   return context
 
 def send_report_to_telegram_chat(context: Context):
