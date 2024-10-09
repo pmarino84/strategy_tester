@@ -105,7 +105,7 @@ def plot_metrics(entris_bars_by_hour: pd.DataFrame, entris_bars_by_dow: pd.DataF
 # TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def report_to_pdf(context: Context, pdf_title = "", author = "", subject = "", keyworkds = ""):
   """
-  Save statistics and metrics as pdf.
+  Save backtest/optimization pipeline result as pdf report.
 
   `context` pipeline result context.\n
   
