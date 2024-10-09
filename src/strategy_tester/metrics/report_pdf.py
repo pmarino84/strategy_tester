@@ -185,24 +185,24 @@ def report_to_pdf(file_path: str, metrics: Dict[str, Union[pd.DataFrame, pd.Seri
     # if there isn't statistics data also there isn't metrics, equity, heatmap...
     return
 
-  profits_losses_sum_by_hour = metrics["profits_losses_sum_by_hour"]
-  profits_losses_sum_by_dow = metrics["profits_losses_sum_by_dow"]
-  profits_losses_sum_by_month = metrics["profits_losses_sum_by_month"]
+  profits_losses_sum_by_hour = metrics["profits_losses_sum_by_hour"] if "profits_losses_sum_by_hour" in metrics else pd.DataFrame()
+  profits_losses_sum_by_dow = metrics["profits_losses_sum_by_dow"] if "profits_losses_sum_by_dow" in metrics else pd.DataFrame()
+  profits_losses_sum_by_month = metrics["profits_losses_sum_by_month"] if "profits_losses_sum_by_month" in metrics else pd.DataFrame()
 
-  profits_losses_by_hour = metrics["profits_losses_by_hour"]
-  profits_losses_by_dow = metrics["profits_losses_by_dow"]
-  profits_losses_by_month = metrics["profits_losses_by_month"]
+  profits_losses_by_hour = metrics["profits_losses_by_hour"] if "profits_losses_by_hour" in metrics else pd.DataFrame()
+  profits_losses_by_dow = metrics["profits_losses_by_dow"] if "profits_losses_by_dow" in metrics else pd.DataFrame()
+  profits_losses_by_month = metrics["profits_losses_by_month"] if "profits_losses_by_month" in metrics else pd.DataFrame()
 
-  entries_by_hour = metrics["entries_by_hour"]
-  entries_by_dow = metrics["entries_by_dow"]
-  entries_by_month = metrics["entries_by_month"]
+  entries_by_hour = metrics["entries_by_hour"] if "entries_by_hour" in metrics else pd.DataFrame()
+  entries_by_dow = metrics["entries_by_dow"] if "entries_by_dow" in metrics else pd.DataFrame()
+  entries_by_month = metrics["entries_by_month"] if "entries_by_month" in metrics else pd.DataFrame()
 
   # profits_losses_mean_by_hour = metrics["profits_losses_mean_by_hour"]
   # profits_losses_mean_by_dow = metrics["profits_losses_mean_by_dow"]
   # profits_losses_mean_by_month = metrics["profits_losses_mean_by_month"]
 
-  profits_by_time_opened = metrics["profits_by_time_opened"]
-  losses_by_time_opened = metrics["losses_by_time_opened"]
+  profits_by_time_opened = metrics["profits_by_time_opened"] if "profits_by_time_opened" in metrics else pd.DataFrame()
+  losses_by_time_opened = metrics["losses_by_time_opened"] if "losses_by_time_opened" in metrics else pd.DataFrame()
 
   equity = statistics["_equity_curve"]["Equity"]
 

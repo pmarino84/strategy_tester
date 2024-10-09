@@ -802,24 +802,25 @@ def report_html(context: Context, parent_folder: str, file_suffix: str = "", str
   trades = stats["_trades"]
   ohlcv = context.data
 
-  profits_losses_sum_by_hour = context.metrics["profits_losses_sum_by_hour"]
-  profits_losses_sum_by_dow = context.metrics["profits_losses_sum_by_dow"]
-  profits_losses_sum_by_month = context.metrics["profits_losses_sum_by_month"]
+  metrics = context.metrics
+  profits_losses_sum_by_hour = metrics["profits_losses_sum_by_hour"] if "profits_losses_sum_by_hour" in metrics else pd.DataFrame()
+  profits_losses_sum_by_dow = metrics["profits_losses_sum_by_dow"] if "profits_losses_sum_by_dow" in metrics else pd.DataFrame()
+  profits_losses_sum_by_month = metrics["profits_losses_sum_by_month"] if "profits_losses_sum_by_month" in metrics else pd.DataFrame()
 
-  profits_losses_by_hour = context.metrics["profits_losses_by_hour"]
-  profits_losses_by_dow = context.metrics["profits_losses_by_dow"]
-  profits_losses_by_month = context.metrics["profits_losses_by_month"]
+  profits_losses_by_hour = metrics["profits_losses_by_hour"] if "profits_losses_by_hour" in metrics else pd.DataFrame()
+  profits_losses_by_dow = metrics["profits_losses_by_dow"] if "profits_losses_by_dow" in metrics else pd.DataFrame()
+  profits_losses_by_month = metrics["profits_losses_by_month"] if "profits_losses_by_month" in metrics else pd.DataFrame()
 
-  entries_by_hour = context.metrics["entries_by_hour"]
-  entries_by_dow = context.metrics["entries_by_dow"]
-  entries_by_month = context.metrics["entries_by_month"]
+  entries_by_hour = metrics["entries_by_hour"] if "entries_by_hour" in metrics else pd.DataFrame()
+  entries_by_dow = metrics["entries_by_dow"] if "entries_by_dow" in metrics else pd.DataFrame()
+  entries_by_month = metrics["entries_by_month"] if "entries_by_month" in metrics else pd.DataFrame()
 
-  # profits_losses_mean_by_hour = context.metrics["profits_losses_mean_by_hour"]
-  # profits_losses_mean_by_dow = context.metrics["profits_losses_mean_by_dow"]
-  # profits_losses_mean_by_month = context.metrics["profits_losses_mean_by_month"]
+  # profits_losses_mean_by_hour = metrics["profits_losses_mean_by_hour"]
+  # profits_losses_mean_by_dow = metrics["profits_losses_mean_by_dow"]
+  # profits_losses_mean_by_month = metrics["profits_losses_mean_by_month"]
 
-  profits_by_time_opened = context.metrics["profits_by_time_opened"]
-  losses_by_time_opened = context.metrics["losses_by_time_opened"]
+  profits_by_time_opened = metrics["profits_by_time_opened"] if "profits_by_time_opened" in metrics else pd.DataFrame()
+  losses_by_time_opened = metrics["losses_by_time_opened"] if "losses_by_time_opened" in metrics else pd.DataFrame()
 
   statistics_json = _statistics_to_json(stats, trades["PnL"])
 

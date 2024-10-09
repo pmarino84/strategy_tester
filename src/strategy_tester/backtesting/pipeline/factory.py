@@ -7,7 +7,6 @@ from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
 from ...pipeline.pipe import pipe
 
 
-# TODO: save report to pdf and html without metrics
 def create_backtest_pipeline(load_data,
                              create_strategy,
                              results_folder_path,
@@ -56,6 +55,8 @@ def create_backtest_pipeline(load_data,
     save_params_as_text,
     save_broker_params,
     save_backtest_result,
+    save_report_to_pdf,
+    save_report_to_html,
     send_report_to_telegram_chat)
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
@@ -123,7 +124,6 @@ def create_backtest_pipeline_with_metrics(load_data,
     save_report_to_html,
     send_report_to_telegram_chat)
 
-# TODO: save report to pdf and html without metrics
 def create_optimization_pipeline(
                                  optimization_attributes: dict,
                                  load_data,
@@ -181,6 +181,8 @@ def create_optimization_pipeline(
     save_params_as_text,
     save_broker_params,
     save_optimization_result,
+    save_report_to_pdf,
+    save_report_to_html,
     send_report_to_telegram_chat)
 
 # TODO: add forgotten documentation around the codebase
