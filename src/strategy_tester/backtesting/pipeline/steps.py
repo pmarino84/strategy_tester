@@ -14,7 +14,7 @@ from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_
 from ...metrics.profits_losses_by_bar_opened import get_losses_by_time_opened, get_profits_by_time_opened
 from ...metrics.profits_losses_mean import get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_hour, get_profits_losses_mean_by_month
 from ...metrics.profits_losses_sum import get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_hour, get_profits_losses_sum_by_month
-from ...metrics.report_pdf import report_to_pdf
+from ...report.pdf.report_pdf import report_to_pdf
 from ...metrics.save import save_metrics
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
@@ -233,7 +233,7 @@ def save_report_to_pdf(context: Context):
   """
   Save calculated metrics as pdf report
   """
-  report_to_pdf(f"{context.result_folder}/report.pdf", context.metrics, context.stats, context.heatmap)
+  report_to_pdf(context)
   return context
 
 def save_report_to_html(context: Context):
