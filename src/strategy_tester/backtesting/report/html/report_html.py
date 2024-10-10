@@ -3,7 +3,7 @@ import json
 
 import pandas as pd
 
-from ...pipeline.context import Context
+from ....pipeline.context import Context
 from ._dataframe_to_candlestickchart_options import _dataframe_to_candlestickchart_options
 from ._dataframe_to_grouped_barchart_options import _dataframe_to_grouped_barchart_options
 from ._dataframe_to_histogramchart_options import _dataframe_to_histogramchart_options

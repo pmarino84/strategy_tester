@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ...utils import parse_data_for_json
+from ....utils import parse_data_for_json
 
 
 def _trades_to_json(data: pd.DataFrame):
