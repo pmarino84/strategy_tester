@@ -77,16 +77,16 @@ def get_add_optimization_params(optimization_params: OptimizationParams):
     return context
   return add_optimization_params
 
-def get_add_optimization_attributes(optimization_attributes: dict):
+def get_add_strategy_params_to_optimize(strategy_params_to_optimize: dict):
   """
   Return the function to add the given optimization attributes to the pipeline context
 
-  `optimization_attributes` strategy attributes to optimize
+  `strategy_params_to_optimize` strategy attributes to optimize
   """
-  def add_optimization_attributes(context: Context):
-    context.optimization_attributes = optimization_attributes
+  def add_strategy_params_to_optimize(context: Context):
+    context.strategy_params_to_optimize = strategy_params_to_optimize
     return context
-  return add_optimization_attributes
+  return add_strategy_params_to_optimize
 
 def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
   """
@@ -124,7 +124,7 @@ def strategy_optimization(context: Context):
     context.strategy,
     context.broker_params,
     context.optimization_params,
-    context.optimization_attributes)
+    context.strategy_params_to_optimize)
   context.stats = stats
   context.heatmap = heatmap
   context.bt = bt
@@ -285,7 +285,7 @@ def _build_notification_message(context: Context):
   if isinstance(context.optimization_params, OptimizationParams):
     strategy_better_params = []
     for param_name, param_value in get_strategy_params(stats["_strategy"]).items():
-      if param_name in context.optimization_attributes:
+      if param_name in context.strategy_params_to_optimize:
         strategy_better_params.append(f"{param_name}: {param_value}")
     strategy_better_params_str = "\n".join(strategy_better_params)
     msg += f"\n\nStrategy better params:\n{strategy_better_params_str}"
@@ -338,7 +338,7 @@ def save_strategy_better_params_as_text(context: Context):
   max_length = max(len(key) for key in params.keys())
   text = "Strategy params:"
   for param_name, param_value in params.items():
-    if param_name in context.optimization_attributes:
+    if param_name in context.strategy_params_to_optimize:
       key = param_name.ljust(max_length, ' ')
       value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
       text += f"\n{key} = {value}"

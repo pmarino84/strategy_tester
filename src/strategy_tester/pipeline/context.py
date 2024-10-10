@@ -33,8 +33,8 @@ class Context:
   """Broker params. see `strategy_tester.broker_params.BrokerParams`."""
   optimization_params: Optional[OptimizationParams]
   """Optimization params. see `strategy_tester.optimization_params.OptimizationParams`."""
-  optimization_attributes: Optional[dict]
-  """Optimization attributes. Strategy attributes to optimize."""
+  strategy_params_to_optimize: Optional[dict]
+  """Strategy params to optimize."""
   telegram_chat_id: Optional[Union[str, int]]
   """(optional) Telegram chat id"""
   telegram_bot: Optional[TelegramBot]
@@ -51,7 +51,7 @@ class Context:
     self.result_folder = None
     self.broker_params = None
     self.optimization_params = None
-    self.optimization_attributes = None
+    self.strategy_params_to_optimize = None
     self.telegram_chat_id = None
     self.telegram_bot = None
   
