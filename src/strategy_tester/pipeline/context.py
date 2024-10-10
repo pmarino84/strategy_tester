@@ -5,6 +5,7 @@ from backtesting.backtesting import Strategy, Backtest
 from ..optimization_params import OptimizationParams
 from ..telegram.bot import TelegramBot
 from ..broker_params import BrokerParams
+from ..utils import get_strategy_params
 
 class Context:
   """Context used by the pipeline runner to maintain the data accross all the job"""
@@ -32,6 +33,8 @@ class Context:
   """Broker params. see `strategy_tester.broker_params.BrokerParams`."""
   optimization_params: Optional[OptimizationParams]
   """Optimization params. see `strategy_tester.optimization_params.OptimizationParams`."""
+  optimization_attributes: Optional[dict]
+  """Optimization attributes. Strategy attributes to optimize."""
   telegram_chat_id: Optional[Union[str, int]]
   """(optional) Telegram chat id"""
   telegram_bot: Optional[TelegramBot]
@@ -47,16 +50,14 @@ class Context:
     self.custom = {}
     self.result_folder = None
     self.broker_params = None
+    self.optimization_params = None
+    self.optimization_attributes = None
     self.telegram_chat_id = None
     self.telegram_bot = None
   
   def get_strategy_params(self) -> dict:
     """Return a dictionary containing only the strategy params defined by you"""
-    params = {}
-    for key, value in vars(self.strategy).items():
-      if not callable(value) and not key.startswith("__") and not key.startswith("_"):
-        params[key] = value
-    return params
+    return get_strategy_params(self.strategy)
 
   def __repr__(self) -> str:
     result = "Context:"

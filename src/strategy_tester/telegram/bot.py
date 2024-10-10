@@ -14,7 +14,7 @@ class TelegramBot:
     try:
       await self.bot.send_message(chat_id=chat_id, text=text)
       # print(f"Message `{text}`successfully sent to chat {chat_id}")
-      print(f"Message successfully sent to chat {chat_id}")
+      # print(f"Message successfully sent to chat {chat_id}")
     except Exception as ex:
       # print(f"Failed to send message `{text}` to chat {chat_id}: {ex}")
       raise TelegramError(f"Failed to send message `{text}` to chat {chat_id}")
@@ -24,7 +24,7 @@ class TelegramBot:
     try:
       with open(file_path, "rb") as file:
         await self.bot.send_document(chat_id=chat_id, document=InputFile(file))
-      print(f"Document `{file_path}` successfully sent to chat {chat_id}")
+      # print(f"Document `{file_path}` successfully sent to chat {chat_id}")
     except Exception as ex:
       # print(f"Failed to send document `{file_path}` to chat {chat_id}: {ex}")
       raise TelegramError(f"Failed to send document `{file_path}` to chat {chat_id}")
@@ -43,7 +43,6 @@ class TelegramBot:
         raise TelegramError(f"Chat id for `{chat_title}` not found")
       
       chat_id = filtered[-1].id
-      print(chat_id)
       return chat_id
     except Exception as ex:
       raise TelegramError(f"Failed to find chat id of `{chat_title}`")
