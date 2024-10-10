@@ -8,7 +8,6 @@ from ._add_metrics import _add_metrics
 from ._add_statistics import _add_statistics
 
 
-# TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def report_to_pdf(context: Context, pdf_title = "", author = "", subject = "", keyworkds = ""):
   """
   Save backtest/optimization pipeline result as pdf report.

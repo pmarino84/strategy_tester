@@ -88,6 +88,21 @@ _MAIN_SCRIPT = """
     document.getElementById("profits_losses_sum_by_month").classList.remove("hide");
     plot_echart(document.getElementById("profits_losses_sum_by_month"), data_source["metrics"]["profits_losses_sum_by_month"]);
   }
+
+  if (data_source["metrics"]["profits_losses_mean_by_hour"]) {
+    document.getElementById("profits_losses_mean_by_hour").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_mean_by_hour"), data_source["metrics"]["profits_losses_mean_by_hour"]);
+  }
+
+  if (data_source["metrics"]["profits_losses_mean_by_dow"]) {
+    document.getElementById("profits_losses_mean_by_dow").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_mean_by_dow"), data_source["metrics"]["profits_losses_mean_by_dow"]);
+  }
+
+  if (data_source["metrics"]["profits_losses_mean_by_month"]) {
+    document.getElementById("profits_losses_mean_by_month").classList.remove("hide");
+    plot_echart(document.getElementById("profits_losses_mean_by_month"), data_source["metrics"]["profits_losses_mean_by_month"]);
+  }
   
   if (data_source["metrics"]["profits_losses_by_hour"]) {
     document.getElementById("profits_losses_by_hour").classList.remove("hide");
@@ -273,7 +288,6 @@ _STYLE_CODE = """
   }
 """
 
-# TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def report_to_html(context: Context, file_suffix: str = ""):
   """
   Save the result statistics and metrics as html page report.
@@ -297,6 +311,10 @@ def report_to_html(context: Context, file_suffix: str = ""):
   profits_losses_sum_by_dow = metrics["profits_losses_sum_by_dow"] if "profits_losses_sum_by_dow" in metrics else pd.DataFrame()
   profits_losses_sum_by_month = metrics["profits_losses_sum_by_month"] if "profits_losses_sum_by_month" in metrics else pd.DataFrame()
 
+  profits_losses_mean_by_hour = metrics["profits_losses_mean_by_hour"] if "profits_losses_mean_by_hour" in metrics else pd.DataFrame()
+  profits_losses_mean_by_dow = metrics["profits_losses_mean_by_dow"] if "profits_losses_mean_by_dow" in metrics else pd.DataFrame()
+  profits_losses_mean_by_month = metrics["profits_losses_mean_by_month"] if "profits_losses_mean_by_month" in metrics else pd.DataFrame()
+
   profits_losses_by_hour = metrics["profits_losses_by_hour"] if "profits_losses_by_hour" in metrics else pd.DataFrame()
   profits_losses_by_dow = metrics["profits_losses_by_dow"] if "profits_losses_by_dow" in metrics else pd.DataFrame()
   profits_losses_by_month = metrics["profits_losses_by_month"] if "profits_losses_by_month" in metrics else pd.DataFrame()
@@ -304,10 +322,6 @@ def report_to_html(context: Context, file_suffix: str = ""):
   entries_by_hour = metrics["entries_by_hour"] if "entries_by_hour" in metrics else pd.DataFrame()
   entries_by_dow = metrics["entries_by_dow"] if "entries_by_dow" in metrics else pd.DataFrame()
   entries_by_month = metrics["entries_by_month"] if "entries_by_month" in metrics else pd.DataFrame()
-
-  # profits_losses_mean_by_hour = metrics["profits_losses_mean_by_hour"] if "profits_losses_mean_by_hour" in metrics else pd.DataFrame()
-  # profits_losses_mean_by_dow = metrics["profits_losses_mean_by_dow"] if "profits_losses_mean_by_dow" in metrics else pd.DataFrame()
-  # profits_losses_mean_by_month = metrics["profits_losses_mean_by_month"] if "profits_losses_mean_by_month" in metrics else pd.DataFrame()
 
   profits_by_time_opened = metrics["profits_by_time_opened"] if "profits_by_time_opened" in metrics else pd.DataFrame()
   losses_by_time_opened = metrics["losses_by_time_opened"] if "losses_by_time_opened" in metrics else pd.DataFrame()
@@ -319,6 +333,10 @@ def report_to_html(context: Context, file_suffix: str = ""):
   profits_losses_sum_by_hour_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_sum_by_hour, "Profits sum by Hour")
   profits_losses_sum_by_dow_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_sum_by_dow, "Profits sum by Day of week")
   profits_losses_sum_by_month_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_sum_by_month, "Profits sum by Month")
+
+  profits_losses_mean_by_hour_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_mean_by_hour, "Profits mean by Hour")
+  profits_losses_mean_by_dow_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_mean_by_dow, "Profits mean by Day of week")
+  profits_losses_mean_by_month_chart_options = _dataseries_to_stacked_barchart_options_splitted_by_zeroline(profits_losses_mean_by_month, "Profits mean by Month")
 
   profits_losses_by_hour_chart_options = _dataframe_to_grouped_barchart_options(profits_losses_by_hour, "Profits/Losses by Hour")
   profits_losses_by_dow_chart_options = _dataframe_to_grouped_barchart_options(profits_losses_by_dow, "Profits/Losses by Day of week")
@@ -348,6 +366,9 @@ def report_to_html(context: Context, file_suffix: str = ""):
       "profits_losses_sum_by_hour": profits_losses_sum_by_hour_chart_options,
       "profits_losses_sum_by_dow": profits_losses_sum_by_dow_chart_options,
       "profits_losses_sum_by_month": profits_losses_sum_by_month_chart_options,
+      "profits_losses_mean_by_hour": profits_losses_mean_by_hour_chart_options,
+      "profits_losses_mean_by_dow": profits_losses_mean_by_dow_chart_options,
+      "profits_losses_mean_by_month": profits_losses_mean_by_month_chart_options,
       "profits_losses_by_hour": profits_losses_by_hour_chart_options,
       "profits_losses_by_dow": profits_losses_by_dow_chart_options,
       "profits_losses_by_month": profits_losses_by_month_chart_options,
@@ -406,6 +427,11 @@ def report_to_html(context: Context, file_suffix: str = ""):
             <div id="profits_losses_sum_by_hour" class="metric hide"></div>
             <div id="profits_losses_sum_by_dow" class="metric hide"></div>
             <div id="profits_losses_sum_by_month" class="metric hide"></div>
+          </div>
+          <div class="metrics__row">
+            <div id="profits_losses_mean_by_hour" class="metric hide"></div>
+            <div id="profits_losses_mean_by_dow" class="metric hide"></div>
+            <div id="profits_losses_mean_by_month" class="metric hide"></div>
           </div>
           <div class="metrics__row">
             <div id="profits_losses_by_hour" class="metric hide"></div>
