@@ -378,3 +378,22 @@ def save_optimization_result(context: Context):
   """
   save_optimization_results(context.stats, context.heatmap, context.result_folder)
   return context
+
+def save_optimization_params_as_text(context: Context):
+  """
+  Save the optimizer params on a text file
+  """
+  params = vars(context.optimization_params)
+  max_length = max(len(key) for key in params.keys())
+  text = "Optimization params:"
+  for param_name, param_value in params.items():
+    if param_name in ["constraint"]:
+      continue
+    key = param_name.ljust(max_length, ' ')
+    value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
+    text += f"\n{key} = {value}"
+  
+  with open(f"{context.result_folder}/optimization_params.txt", encoding="utf-8", mode="w+") as file:
+    file.write(text)
+  return context
+
