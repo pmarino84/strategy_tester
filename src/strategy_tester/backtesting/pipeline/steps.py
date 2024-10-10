@@ -314,20 +314,36 @@ def send_report_to_telegram_chat(context: Context):
       await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.html")
     asyncio.run(notify())
 
-def save_params_as_text(context: Context):
+def save_strategy_params_as_text(context: Context):
   """
   Save the strategy params on a text file
   """
-  parent_folder = context.result_folder
-  params = context.get_strategy_params()
+  params = get_strategy_params(context.strategy)
   max_length = max(len(key) for key in params.keys())
-  text = f"{context.strategy_name or context.strategy.__name__} params:"
+  text = "Strategy params:"
   for param_name, param_value in params.items():
     key = param_name.ljust(max_length, ' ')
     value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
-    text += f"\n{key} = {value}"
+    text += f"\n{key}: {value}"
+  
+  with open(f"{context.result_folder}/strategy_params.txt", encoding="utf-8", mode="w+") as file:
+    file.write(text)
+  return context
 
-  with open(f"{parent_folder}/params.txt", encoding="utf-8", mode="w+") as file:
+def save_strategy_better_params_as_text(context: Context):
+  """
+  Save the strategy params on a text file
+  """
+  params = get_strategy_params(context.strategy)
+  max_length = max(len(key) for key in params.keys())
+  text = "Strategy params:"
+  for param_name, param_value in params.items():
+    if param_name in context.optimization_attributes:
+      key = param_name.ljust(max_length, ' ')
+      value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
+      text += f"\n{key}: {value}"
+  
+  with open(f"{context.result_folder}/strategy_better_params.txt", encoding="utf-8", mode="w+") as file:
     file.write(text)
   return context
 
