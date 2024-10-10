@@ -324,7 +324,7 @@ def save_strategy_params_as_text(context: Context):
   for param_name, param_value in params.items():
     key = param_name.ljust(max_length, ' ')
     value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
-    text += f"\n{key}: {value}"
+    text += f"\n{key} = {value}"
   
   with open(f"{context.result_folder}/strategy_params.txt", encoding="utf-8", mode="w+") as file:
     file.write(text)
@@ -341,7 +341,7 @@ def save_strategy_better_params_as_text(context: Context):
     if param_name in context.optimization_attributes:
       key = param_name.ljust(max_length, ' ')
       value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
-      text += f"\n{key}: {value}"
+      text += f"\n{key} = {value}"
   
   with open(f"{context.result_folder}/strategy_better_params.txt", encoding="utf-8", mode="w+") as file:
     file.write(text)
