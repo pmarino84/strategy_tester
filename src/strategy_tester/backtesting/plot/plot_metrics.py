@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from ..pipeline.context import Context
+from ...pipeline.context import Context
 
 
 def plot_metrics(context: Context):
