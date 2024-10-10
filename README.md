@@ -31,3 +31,9 @@ To create the documentations run the command:
 ```bash
 cd src && pdoc strategy_tester -o ../docs --no-show-source
 ```
+
+To build the package run the command:
+
+```bash
+hatch build -c
+```
