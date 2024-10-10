@@ -93,7 +93,7 @@ Homepage = "https://github.com/pmarino84/strategy_tester"
 Issues = "https://github.com/pmarino84/strategy_tester/issues"
 
 [tool.hatch.version]
-path = "src/__version__.py"
+path = "src/strategy_tester/__version__.py"
 
 [tool.hatch.build.target.sdist]
 exclude = [

@@ -1,6 +1,5 @@
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
-# TODO: sistemare le funzioni che salvano i report in pdf/html nel caso non ci siano profitti/perdite si rompe tutto
 from ...backtesting.pipeline.steps import *
 from ...broker_params import BrokerParams, BrokerParamsBuilder
 from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
@@ -185,7 +184,6 @@ def create_optimization_pipeline(
     save_report_to_html,
     send_report_to_telegram_chat)
 
-# TODO: add forgotten documentation around the codebase
 def create_optimization_pipeline_with_metrics(
                                  optimization_attributes: dict,
                                  load_data,

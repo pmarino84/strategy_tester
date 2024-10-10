@@ -273,6 +273,7 @@ _STYLE_CODE = """
   }
 """
 
+# TODO: aggiungere profits_losses_mean_by_hour/dow/month
 def report_to_html(context: Context, file_suffix: str = ""):
   """
   Save the result statistics and metrics as html page report.
