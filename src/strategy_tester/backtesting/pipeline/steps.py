@@ -1,24 +1,36 @@
 import asyncio
-from datetime import datetime
 import os
+from datetime import datetime
 from typing import Optional
+
 import pandas as pd
 
-from ...optimization_params import OptimizationParams
 from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
-from ...backtesting.saving import save_backtest_results, save_optimization_results
+from ...backtesting.saving import (save_backtest_results,
+                                   save_optimization_results)
 from ...broker_params import BrokerParams
-from ...metrics.entries_counts import get_entries_by_dayofweek, get_entries_by_hour, get_entries_by_month
-from ...metrics.profits_losses_bars import get_profits_losses_by_dayofweek, get_profits_losses_by_hour, get_profits_losses_by_month
-from ...metrics.profits_losses_by_bar_opened import get_losses_by_time_opened, get_profits_by_time_opened
-from ...metrics.profits_losses_mean import get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_hour, get_profits_losses_mean_by_month
-from ...metrics.profits_losses_sum import get_profits_losses_sum_by_dayofweek, get_profits_losses_sum_by_hour, get_profits_losses_sum_by_month
-from ...report.pdf import report_to_pdf
+from ...metrics.entries_counts import (get_entries_by_dayofweek,
+                                       get_entries_by_hour,
+                                       get_entries_by_month)
+from ...metrics.profits_losses_bars import (get_profits_losses_by_dayofweek,
+                                            get_profits_losses_by_hour,
+                                            get_profits_losses_by_month)
+from ...metrics.profits_losses_by_bar_opened import (
+    get_losses_by_time_opened, get_profits_by_time_opened)
+from ...metrics.profits_losses_mean import (
+    get_profits_losses_mean_by_dayofweek, get_profits_losses_mean_by_hour,
+    get_profits_losses_mean_by_month)
+from ...metrics.profits_losses_sum import (get_profits_losses_sum_by_dayofweek,
+                                           get_profits_losses_sum_by_hour,
+                                           get_profits_losses_sum_by_month)
 from ...metrics.save import save_metrics
+from ...optimization_params import OptimizationParams
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
-from ...report.html import report_to_html
+from ..report.html import report_to_html
+from ..report.pdf import report_to_pdf
+
 
 def get_add_asset_name(asset_name: str):
   """
