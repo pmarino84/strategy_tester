@@ -124,7 +124,7 @@ def create_backtest_pipeline_with_metrics(load_data,
     send_report_to_telegram_chat)
 
 def create_optimization_pipeline(
-                                 optimization_attributes: dict,
+                                 strategy_params_to_optimize: dict,
                                  load_data,
                                  create_strategy,
                                  results_folder_path,
@@ -170,7 +170,7 @@ def create_optimization_pipeline(
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
     get_add_optimization_params(optimization_params),
-    get_add_optimization_attributes(optimization_attributes),
+    get_add_strategy_params_to_optimize(strategy_params_to_optimize),
     get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
     load_data,
     create_strategy,
@@ -187,7 +187,7 @@ def create_optimization_pipeline(
     send_report_to_telegram_chat)
 
 def create_optimization_pipeline_with_metrics(
-                                 optimization_attributes: dict,
+                                 strategy_params_to_optimize: dict,
                                  load_data,
                                  create_strategy,
                                  results_folder_path,
@@ -237,7 +237,7 @@ def create_optimization_pipeline_with_metrics(
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
     get_add_optimization_params(optimization_params),
-    get_add_optimization_attributes(optimization_attributes),
+    get_add_strategy_params_to_optimize(strategy_params_to_optimize),
     get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
     load_data,
     create_strategy,

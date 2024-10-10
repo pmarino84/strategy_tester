@@ -10,7 +10,7 @@ def run_optimization(
     strategy: Type[Strategy],
     broker_params: BrokerParams,
     optimization_params: OptimizationParams,
-    optimization_attributes: dict) -> Tuple[pd.Series, Backtest]:
+    strategy_params_to_optimize: dict) -> Tuple[pd.Series, Backtest]:
   """
   execute the optimization of the strategy.
   Return the Tuple with the statistics, result heatmap and the backtest instance.\n
@@ -19,7 +19,7 @@ def run_optimization(
   `strategy` the strategy implementation\n
   `broker_params` Params for the broker\n
   `optimization_params` Params for the optimization\n
-  `optimization_attributes` Strategy attributes to optimize\n
+  `strategy_params_to_optimize` Strategy attributes to optimize\n
   """
   bt = Backtest(
     data,
@@ -31,7 +31,7 @@ def run_optimization(
     hedging=broker_params.hedging,
     exclusive_orders=broker_params.exclusive_orders)
   stats, heatmap = bt.optimize(
-    **optimization_attributes,
+    **strategy_params_to_optimize,
     maximize=optimization_params.maximize,
     # method=optimization_params.method, # TODO: da usare quando si potranno gestire i 3 risultati da bt.optimize(...
     method="grid",
