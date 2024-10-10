@@ -28,6 +28,7 @@ from ...metrics.save import save_metrics
 from ...optimization_params import OptimizationParams
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
+from ...utils import get_strategy_params
 from ..report.html import report_to_html
 from ..report.pdf import report_to_pdf
 
@@ -76,6 +77,17 @@ def get_add_optimization_params(optimization_params: OptimizationParams):
     return context
   return add_optimization_params
 
+def get_add_optimization_attributes(optimization_attributes: dict):
+  """
+  Return the function to add the given optimization attributes to the pipeline context
+
+  `optimization_attributes` strategy attributes to optimize
+  """
+  def add_optimization_attributes(context: Context):
+    context.optimization_attributes = optimization_attributes
+    return context
+  return add_optimization_attributes
+
 def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
   """
   Return the function to add the telegram bot attributes to the pipeline context.
@@ -103,22 +115,20 @@ def strategy_backtest(context: Context):
   context.bt = bt
   return context
 
-def get_strategy_optimization(optimization_attributes: dict):
+def strategy_optimization(context: Context):
   """
-  Return the function that run the optimization and add it's results and the backtester to the pipeline context
+  Run the optimization and add it's results and the backtester to the pipeline context
   """
-  def strategy_optimization(context: Context):
-    stats, heatmap, bt = run_optimization(
-      context.data,
-      context.strategy,
-      context.broker_params,
-      context.optimization_params,
-      optimization_attributes)
-    context.stats = stats
-    context.heatmap = heatmap
-    context.bt = bt
-    return context
-  return strategy_optimization
+  stats, heatmap, bt = run_optimization(
+    context.data,
+    context.strategy,
+    context.broker_params,
+    context.optimization_params,
+    context.optimization_attributes)
+  context.stats = stats
+  context.heatmap = heatmap
+  context.bt = bt
+  return context
 
 def copy_trades_table(context: Context):
   """
@@ -255,16 +265,53 @@ def save_report_to_html(context: Context):
   report_to_html(context)
   return context
 
+def _build_notification_message(context: Context):
+  asset_name = context.asset_name or "N/A"
+  strategy_name = context.strategy_name or context.strategy.__name__
+  stats = context.stats
+
+  statistics: list[str] = []
+  # max_len = max([len(index) for index in stats.index])
+  for index, value in stats.items():
+    if index in ["_trades", "_equity_curve", "_strategy"]:
+      continue
+    # statistics.append(f"{index.ljust(max_len, ' ')}: {value}")
+    statistics.append(f"{index}: {value}")
+  
+  stats_str = "\n".join(statistics)
+
+  msg = f"{strategy_name} strategy test on {asset_name} finished\n\nStatistics:\n{stats_str}"
+  
+  if isinstance(context.optimization_params, OptimizationParams):
+    strategy_better_params = []
+    for param_name, param_value in get_strategy_params(stats["_strategy"]).items():
+      if param_name in context.optimization_attributes:
+        strategy_better_params.append(f"{param_name}: {param_value}")
+    strategy_better_params_str = "\n".join(strategy_better_params)
+    msg += f"\n\nStrategy better params:\n{strategy_better_params_str}"
+
+    msg += "\n\nOptimization params used:"
+    for param_name, param_value in vars(context.optimization_params).items():
+      if param_name in ["constraint"]:
+        continue
+      msg += f"\n{param_name}: {param_value}"
+  
+  msg += "\n\nBroker params used:"
+  for param_name, param_value in vars(context.broker_params).items():
+    msg += f"\n{param_name}: {param_value}"
+
+  return msg
+
 def send_report_to_telegram_chat(context: Context):
   """
   Send the notification to Telegram chat (if telegram bot info available) to inform the end of the pipeline
   """
   if context.telegram_bot:
-    asset_name = context.asset_name or "N/A"
-    strategy_name = context.strategy_name or context.strategy.__name__
     # https://stackoverflow.com/questions/55647753/call-async-function-from-sync-function-while-the-synchronous-function-continues
     async def notify():
-      await context.telegram_bot.send_message(context.telegram_chat_id, f"{asset_name} {strategy_name} strategy backtest finished")
+      await context.telegram_bot.send_message(context.telegram_chat_id, _build_notification_message(context))
+      await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.pdf")
+      await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.html")
     asyncio.run(notify())
 
 def save_params_as_text(context: Context):
