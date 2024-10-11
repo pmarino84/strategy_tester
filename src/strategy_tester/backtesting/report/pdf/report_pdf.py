@@ -5,6 +5,7 @@ from ._add_equity import _add_equity
 from ._add_heatmap import _add_heatmap
 from ._add_metadata import _add_metadata
 from ._add_metrics import _add_metrics
+from ._add_pnl_distribution import _add_pnl_distribution
 from ._add_statistics import _add_statistics
 
 
@@ -32,6 +33,8 @@ def report_to_pdf(context: Context, pdf_title = "", author = "", subject = "", k
     _add_equity(pdf, statistics["_equity_curve"]["Equity"])
 
     _add_metrics(pdf, context.metrics)
+
+    _add_pnl_distribution(pdf, statistics["_trades"]["PnL"], bins=100)
 
     _add_heatmap(pdf, context.heatmap)
 
