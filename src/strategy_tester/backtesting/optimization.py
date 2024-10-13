@@ -3,7 +3,7 @@ import pandas as pd
 from backtesting import Backtest, Strategy
 
 from ..optimization_params import OptimizationParams
-from ..broker_params import BrokerParams
+from .broker_params import BrokerParams
 
 def run_optimization(
     data: pd.DataFrame,

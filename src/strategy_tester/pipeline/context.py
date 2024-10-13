@@ -4,7 +4,7 @@ from backtesting.backtesting import Strategy, Backtest
 
 from ..optimization_params import OptimizationParams
 from ..telegram.bot import TelegramBot
-from ..broker_params import BrokerParams
+from ..backtesting.broker_params import BrokerParams
 from ..utils.strategy_params import get_strategy_params
 
 class Context:

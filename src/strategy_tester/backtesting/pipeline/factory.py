@@ -1,7 +1,7 @@
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
 from ...backtesting.pipeline.steps import *
-from ...broker_params import BrokerParams, BrokerParamsBuilder
+from ..broker_params import BrokerParams, BrokerParamsBuilder
 from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
 from ...pipeline.pipe import pipe
 

@@ -9,7 +9,7 @@ from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
 from ...backtesting.saving import (save_backtest_results,
                                    save_optimization_results)
-from ...broker_params import BrokerParams
+from ..broker_params import BrokerParams
 from ...metrics.entries_counts import (get_entries_by_dayofweek,
                                        get_entries_by_hour,
                                        get_entries_by_month)

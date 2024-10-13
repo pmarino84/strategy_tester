@@ -2,7 +2,7 @@ from typing import Type, Tuple
 import pandas as pd
 from backtesting import Backtest, Strategy
 
-from ..broker_params import BrokerParams
+from .broker_params import BrokerParams
 
 def run_backtest(
     data: pd.DataFrame,

@@ -1,5 +1,14 @@
 class BrokerParams:
-  """Class for Broker parameters"""
+  """
+  Class to simplify Broker parameters configuration.
+
+  `cash` Initial account cash.\n
+  `commission` The commission ratio.\nE.g.: if your broker commission is 1% of trade value set commission to 0.01.\n
+  `margin` Required margin for a leveraged account.\nTo run the backtest using e.g. 50:1 leverge that your broker allows, set margin to 0.02 (1 / leverage).\n
+  `trades_on_close` If trade_on_close is True, market orders will be filled with respect to the current bar's closing price instead of the next bar's open.\n
+  `hedging` If hedging is True, allow trades in both directions simultaneously. If False, the opposite-facing orders first close existing trades.\n
+  `exclusive_orders` If exclusive_orders is True, each new order auto-closes the previous trade/position, making at most a single trade (long or short) in effect at each time.\n
+  """
   def __init__(
     self,
     cash: float = 10_000,
@@ -9,29 +18,11 @@ class BrokerParams:
     hedging=False,
     exclusive_orders=False) -> None:
     self.cash = cash
-    """
-    Initial account cash.
-    """
     self.commission = commission
-    """
-    The commission ratio.\nE.g.: if your broker commission is 1% of trade value set commission to 0.01.
-    """
     self.margin = margin
-    """
-    Required margin for a leveraged account.\nTo run the backtest using e.g. 50:1 leverge that your broker allows, set margin to 0.02 (1 / leverage).
-    """
     self.trade_on_close = trade_on_close
-    """
-    If trade_on_close is True, market orders will be filled with respect to the current bar's closing price instead of the next bar's open.
-    """
     self.hedging = hedging
-    """
-    If hedging is True, allow trades in both directions simultaneously. If False, the opposite-facing orders first close existing trades.
-    """
     self.exclusive_orders = exclusive_orders
-    """
-    If exclusive_orders is True, each new order auto-closes the previous trade/position, making at most a single trade (long or short) in effect at each time.
-    """
 
   def __str__(self) -> str:
     return f"<BrokerParams (cash={self.cash}, commission={self.commission}, margin={self.margin}, trade_on_close={self.trade_on_close}, hedging={self.hedging}, exclusive_orders={self.exclusive_orders})>"
