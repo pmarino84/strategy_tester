@@ -1,7 +1,6 @@
 from typing import Union
 from telegram import Bot, InputFile
 from telegram.error import TelegramError
-# from .errors import TelegramError
 
 class TelegramBot:
   """Telegram bot class to communicate with your desired chat"""
@@ -13,10 +12,7 @@ class TelegramBot:
     """send the message to the chat with the given chat id"""
     try:
       await self.bot.send_message(chat_id=chat_id, text=text)
-      # print(f"Message `{text}`successfully sent to chat {chat_id}")
-      # print(f"Message successfully sent to chat {chat_id}")
     except Exception as ex:
-      # print(f"Failed to send message `{text}` to chat {chat_id}: {ex}")
       raise TelegramError(f"Failed to send message `{text}` to chat {chat_id}")
   
   async def send_document(self, chat_id: Union[int, str], file_path: str):
@@ -24,9 +20,7 @@ class TelegramBot:
     try:
       with open(file_path, "rb") as file:
         await self.bot.send_document(chat_id=chat_id, document=InputFile(file))
-      # print(f"Document `{file_path}` successfully sent to chat {chat_id}")
     except Exception as ex:
-      # print(f"Failed to send document `{file_path}` to chat {chat_id}: {ex}")
       raise TelegramError(f"Failed to send document `{file_path}` to chat {chat_id}")
 
   async def get_chat_id_by_chat_title(self, chat_title: str) -> int:
