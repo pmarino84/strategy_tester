@@ -1,5 +1,5 @@
 import pandas as pd
-from ..utils.files import _create_file_suffix
+from ..utils.files import create_file_suffix
 
 def save_equity(stats: pd.Series, parent_folder: str, file_suffix = ""):
   """
@@ -9,7 +9,7 @@ def save_equity(stats: pd.Series, parent_folder: str, file_suffix = ""):
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
   equity_file_name = f"{parent_folder}/equity{file_suffix}.csv"
   stats["_equity_curve"].to_csv(equity_file_name)
 
@@ -21,7 +21,7 @@ def save_statistics_to_json(stats: pd.Series, parent_folder: str, file_suffix = 
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
   stats_file_name = f"{parent_folder}/stats{file_suffix}.json"
   stats_filtered = pd.DataFrame(stats).copy().T
   stats_filtered.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
@@ -36,7 +36,7 @@ def save_statistics_to_csv(stats: pd.Series, parent_folder: str, file_suffix = "
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
   stats_file_name = f"{parent_folder}/stats{file_suffix}.csv"
   stats_filtered = pd.DataFrame(stats).copy().T
   stats_filtered.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
@@ -50,7 +50,7 @@ def save_trades(stats: pd.Series, parent_folder: str, file_suffix = ""):
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
   trades_file_name = f"{parent_folder}/trades{file_suffix}.csv"
   stats["_trades"].to_csv(trades_file_name, index=False)
 
@@ -75,7 +75,7 @@ def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
   file_name = f"{parent_folder}/heatmap{file_suffix}.csv"
   heatmap.to_csv(file_name)
 

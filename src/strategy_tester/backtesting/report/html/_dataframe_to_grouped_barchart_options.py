@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ....utils import flatten_list
+from ....utils.list import flatten_list
 
 
 def _dataframe_to_grouped_barchart_options(data: pd.DataFrame, title: str = None):
