@@ -1,7 +1,7 @@
 import os
 from dotenv import dotenv_values
 
-from ....strategy_tester.optimization_params import OptimizationParamsBuilder
+from ....strategy_tester.backtesting.optimization_params import OptimizationParamsBuilder
 from ....strategy_tester.backtesting.broker_params import BrokerParamsBuilder
 from .pipeline import create_pipeline_optimization
 

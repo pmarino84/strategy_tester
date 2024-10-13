@@ -25,7 +25,7 @@ from ...metrics.profits_losses_sum import (get_profits_losses_sum_by_dayofweek,
                                            get_profits_losses_sum_by_hour,
                                            get_profits_losses_sum_by_month)
 from ...metrics.save import save_metrics
-from ...optimization_params import OptimizationParams
+from ..optimization_params import OptimizationParams
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
 from ...utils.strategy_params import get_strategy_params

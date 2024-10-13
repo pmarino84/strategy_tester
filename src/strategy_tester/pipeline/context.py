@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional, Union
 import pandas as pd
 from backtesting.backtesting import Strategy, Backtest
 
-from ..optimization_params import OptimizationParams
+from ..backtesting.optimization_params import OptimizationParams
 from ..telegram.bot import TelegramBot
 from ..backtesting.broker_params import BrokerParams
 from ..utils.strategy_params import get_strategy_params
