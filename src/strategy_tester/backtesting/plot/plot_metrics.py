@@ -4,7 +4,7 @@ import pandas as pd
 from ...pipeline.context import Context
 
 
-def plot_metrics(context: Context):
+def plot_metrics(context: Context) -> None:
   """
   Plot statistics, equity and metrics with the help of `matplotlib`.
 

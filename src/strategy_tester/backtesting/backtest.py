@@ -1,8 +1,10 @@
-from typing import Type, Tuple
+from typing import Tuple, Type
+
 import pandas as pd
 from backtesting import Backtest, Strategy
 
 from .broker_params import BrokerParams
+
 
 def run_backtest(
     data: pd.DataFrame,

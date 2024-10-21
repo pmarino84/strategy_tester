@@ -2,6 +2,7 @@ from typing import Callable, Union
 
 import pandas as pd
 
+
 class OptimizationParams:
   """
   Class for Optimization process params.

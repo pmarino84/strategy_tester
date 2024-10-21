@@ -1,7 +1,9 @@
 import pandas as pd
+
 from ..utils.files import create_file_suffix
 
-def save_equity(stats: pd.Series, parent_folder: str, file_suffix = ""):
+
+def save_equity(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   Save the equity curve as csv
 
@@ -13,7 +15,7 @@ def save_equity(stats: pd.Series, parent_folder: str, file_suffix = ""):
   equity_file_name = f"{parent_folder}/equity{file_suffix}.csv"
   stats["_equity_curve"].to_csv(equity_file_name)
 
-def save_statistics_to_json(stats: pd.Series, parent_folder: str, file_suffix = ""):
+def save_statistics_to_json(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   Save the statistics as json
 
@@ -28,7 +30,7 @@ def save_statistics_to_json(stats: pd.Series, parent_folder: str, file_suffix = 
   stats_filtered = stats_filtered.T
   stats_filtered[0].to_json(stats_file_name)
 
-def save_statistics_to_csv(stats: pd.Series, parent_folder: str, file_suffix = ""):
+def save_statistics_to_csv(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   Save the statistics as csv
 
@@ -42,7 +44,7 @@ def save_statistics_to_csv(stats: pd.Series, parent_folder: str, file_suffix = "
   stats_filtered.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
   stats_filtered.to_csv(stats_file_name, index=False)
 
-def save_trades(stats: pd.Series, parent_folder: str, file_suffix = ""):
+def save_trades(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   Save the trades as csv
 
@@ -54,7 +56,7 @@ def save_trades(stats: pd.Series, parent_folder: str, file_suffix = ""):
   trades_file_name = f"{parent_folder}/trades{file_suffix}.csv"
   stats["_trades"].to_csv(trades_file_name, index=False)
 
-def save_backtest_results(stats: pd.Series, parent_folder: str, file_suffix = ""):
+def save_backtest_results(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   Save the statistics, equity curve and trades on files.
 
@@ -67,7 +69,7 @@ def save_backtest_results(stats: pd.Series, parent_folder: str, file_suffix = ""
   save_statistics_to_csv(stats, parent_folder, file_suffix)
   save_trades(stats, parent_folder, file_suffix)
 
-def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
+def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") -> None:
   """
   Save the heatmap as csv
 
@@ -79,7 +81,7 @@ def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
   file_name = f"{parent_folder}/heatmap{file_suffix}.csv"
   heatmap.to_csv(file_name)
 
-def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_folder: str, file_suffix = ""):
+def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") -> None:
   """
   Save the statistics, heatmap, equity curve and trades on files.
 
