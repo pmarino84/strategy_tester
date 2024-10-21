@@ -1,44 +1,63 @@
 from typing import Any, Dict, Optional, Union
-import pandas as pd
-from backtesting.backtesting import Strategy, Backtest
 
+import pandas as pd
+from backtesting.backtesting import Backtest, Strategy
+
+from ..backtesting.broker_params import BrokerParams
 from ..backtesting.optimization_params import OptimizationParams
 from ..telegram.bot import TelegramBot
-from ..backtesting.broker_params import BrokerParams
 from ..utils.strategy_params import get_strategy_params
 
 class Context:
-  """Context used by the pipeline runner to maintain the data accross all the job"""
+  """Context used by the pipeline runner to maintain the data accross all the job
+
+  Attributes:
+
+  `asset_name` (str): Asset name (like EURUSD, BTCUSDT, NVDAUSD, ...)
+
+  `strategy_name` (str): Name of the strategy under test
+  
+  `data` (pd.DataFrame): Data of the asset under test
+  
+  `strategy` (Strategy): Backtesting.py Strategy class implementation
+  
+  `stats` (pd.Series): Result statistics from the backtest/optimization
+  
+  `heatmap` (pd.Series): Result heatmap from the optimization, available only with optimization pipelines
+  
+  `bt` (Backtest): Backtest instance
+  
+  `metrics` (Dict[str, Union[pd.DataFrame, pd.Series]]): Calculated metrics from statistics and/or heatmap go here
+  
+  `custom` (Dict[str, any]): Dictionary for your custom funcionality if needed
+  
+  `result_folder` (str): Where to save the report files
+  
+  `broker_params` (strategy_tester.backtesting.broker_params.BrokerParams): Broker params
+  
+  `optimization_params` (strategy_tester.backtesting.optimization_params.OptimizationParams): [optional] Optimization params
+  
+  `strategy_params_to_optimize` (dict): [optional] Strategy params to optimize
+  
+  `telegram_chat_id` (Union[str, int]): [optional] Telegram chat id
+  
+  `telegram_bot` (TelegramBot): [optional] Telegram Bot instance
+  """
   asset_name: Optional[str]
-  """(optional) Asset name like EURUSD, BTCUSDT"""
   strategy_name: Optional[str]
-  """(optional) your strategy name"""
   data: Optional[pd.DataFrame]
-  """Data of the asset under test"""
   strategy: Optional[Strategy]
-  """Your Backtesting.py Strategy class"""
   stats: Optional[pd.Series]
-  """Result statistics from the backtest/optimization"""
   heatmap: Optional[pd.Series]
-  """(optional) Result heatmap from the optimization"""
   bt: Optional[Backtest]
-  """Backtest instance"""
   metrics: Dict[str, Union[pd.DataFrame, pd.Series]]
-  """(optional) Calculated metrics from statistics and/or heatmap go here"""
   custom: Dict[str, Any]
-  """Dictionary for your custom funcionality if needed"""
   result_folder: Optional[str]
-  """(optional) Where to save the report files"""
   broker_params: Optional[BrokerParams]
-  """Broker params. see `strategy_tester.broker_params.BrokerParams`."""
   optimization_params: Optional[OptimizationParams]
-  """Optimization params. see `strategy_tester.optimization_params.OptimizationParams`."""
   strategy_params_to_optimize: Optional[dict]
-  """Strategy params to optimize."""
   telegram_chat_id: Optional[Union[str, int]]
-  """(optional) Telegram chat id"""
   telegram_bot: Optional[TelegramBot]
-  """(optional) Telegram Bot instance"""
   def __init__(self) -> None:
     self.asset_name = None
     self.strategy_name = None
