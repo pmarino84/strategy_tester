@@ -9,7 +9,6 @@ from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
 from ...backtesting.saving import (save_backtest_results,
                                    save_optimization_results)
-from ...broker_params import BrokerParams
 from ...metrics.entries_counts import (get_entries_by_dayofweek,
                                        get_entries_by_hour,
                                        get_entries_by_month)
@@ -25,10 +24,11 @@ from ...metrics.profits_losses_sum import (get_profits_losses_sum_by_dayofweek,
                                            get_profits_losses_sum_by_hour,
                                            get_profits_losses_sum_by_month)
 from ...metrics.save import save_metrics
-from ...optimization_params import OptimizationParams
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
-from ...utils import get_strategy_params
+from ...utils.strategy_params import get_strategy_params
+from ..broker_params import BrokerParams
+from ..optimization_params import OptimizationParams
 from ..report.html import report_to_html
 from ..report.pdf import report_to_pdf
 

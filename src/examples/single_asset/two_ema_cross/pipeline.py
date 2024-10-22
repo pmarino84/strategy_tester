@@ -3,9 +3,9 @@ from backtesting import Strategy
 from backtesting.lib import crossover
 from backtesting.test import GOOG
 
-from ....strategy_tester.optimization_params import OptimizationParams
+from ....strategy_tester.backtesting.optimization_params import OptimizationParams
 from ....strategy_tester.backtesting.pipeline.factory import create_backtest_pipeline_with_metrics, create_optimization_pipeline_with_metrics
-from ....strategy_tester.broker_params import BrokerParams
+from ....strategy_tester.backtesting.broker_params import BrokerParams
 from ....strategy_tester.pipeline.context import Context
 
 def load_data(context: Context):

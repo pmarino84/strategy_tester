@@ -1,2 +1,2 @@
-def _create_file_suffix(suffix = ""):
+def create_file_suffix(suffix = ""):
   return "" if suffix == "" else f"_{suffix}"

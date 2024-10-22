@@ -1,16 +1,18 @@
-from typing import Type, Tuple
+from typing import Tuple, Type
+
 import pandas as pd
 from backtesting import Backtest, Strategy
 
-from ..optimization_params import OptimizationParams
-from ..broker_params import BrokerParams
+from .broker_params import BrokerParams
+from .optimization_params import OptimizationParams
+
 
 def run_optimization(
     data: pd.DataFrame,
     strategy: Type[Strategy],
     broker_params: BrokerParams,
     optimization_params: OptimizationParams,
-    strategy_params_to_optimize: dict) -> Tuple[pd.Series, Backtest]:
+    strategy_params_to_optimize: dict) -> Tuple[pd.Series, pd.DataFrame, Backtest]:
   """
   execute the optimization of the strategy.
   Return the Tuple with the statistics, result heatmap and the backtest instance.\n

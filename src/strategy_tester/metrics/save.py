@@ -1,6 +1,6 @@
 # from datetime import datetime
 import pandas as pd
-from ..utils.files import _create_file_suffix
+from ..utils.files import create_file_suffix
 
 def save_metrics(entries_bars_by_hour: pd.DataFrame, entries_bars_by_dow: pd.DataFrame, entries_bars_by_month: pd.DataFrame,
                 profits_losses_by_hour: pd.DataFrame, profits_losses_by_dow: pd.DataFrame, profits_losses_by_month: pd.DataFrame,
@@ -34,7 +34,7 @@ def save_metrics(entries_bars_by_hour: pd.DataFrame, entries_bars_by_dow: pd.Dat
   
   `file_suffix` optional file suffix to customize the file name.\n
   """
-  file_suffix = _create_file_suffix(file_suffix)
+  file_suffix = create_file_suffix(file_suffix)
 
   if not entries_bars_by_hour.empty:
     entries_bars_by_hour_filename = f"{parent_folder}/entries_by_hour{file_suffix}.csv"

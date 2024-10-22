@@ -1,9 +1,9 @@
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
 from ...backtesting.pipeline.steps import *
-from ...broker_params import BrokerParams, BrokerParamsBuilder
-from ...optimization_params import OptimizationParams, OptimizationParamsBuilder
-from ...pipeline.pipe import pipe
+from ...pipeline.pipe import Pipeline, pipe
+from ..broker_params import BrokerParams, BrokerParamsBuilder
+from ..optimization_params import OptimizationParams, OptimizationParamsBuilder
 
 
 def create_backtest_pipeline(load_data,
@@ -13,7 +13,7 @@ def create_backtest_pipeline(load_data,
                              strategy_name: str = None,
                              broker_params: BrokerParams = BrokerParamsBuilder().build(),
                              telegram_bot_token: str = None,
-                             telegram_chat_id: str = None):
+                             telegram_chat_id: str = None) -> Pipeline:
   """
   Return the default basic pipeline to backtest a strategy.
 
@@ -66,7 +66,7 @@ def create_backtest_pipeline_with_metrics(load_data,
                                           strategy_name: str = None,
                                           broker_params: BrokerParams = BrokerParamsBuilder().build(),
                                           telegram_bot_token: str = None,
-                                          telegram_chat_id: str = None):
+                                          telegram_chat_id: str = None) -> Pipeline:
   """
   Return the default basic pipeline added with metrics calculation to backtest a strategy.
 
@@ -133,7 +133,7 @@ def create_optimization_pipeline(
                                  broker_params: BrokerParams = BrokerParamsBuilder().build(),
                                  optimization_params: OptimizationParams = OptimizationParamsBuilder().build(),
                                  telegram_bot_token: str = None,
-                                 telegram_chat_id: str = None):
+                                 telegram_chat_id: str = None) -> Pipeline:
   """
   Return the default basic pipeline to optimize the strategy.
 
@@ -196,7 +196,7 @@ def create_optimization_pipeline_with_metrics(
                                  broker_params: BrokerParams = BrokerParamsBuilder().build(),
                                  optimization_params: OptimizationParams = OptimizationParamsBuilder().build(),
                                  telegram_bot_token: str = None,
-                                 telegram_chat_id: str = None):
+                                 telegram_chat_id: str = None) -> Pipeline:
   """
   Return the default basic pipeline added with metrics calculation to optimize the strategy.
 

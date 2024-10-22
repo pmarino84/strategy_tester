@@ -1,5 +1,5 @@
 import pytest
-from strategy_tester.optimization_params import OptimizationParams, OptimizationParamsBuilder
+from strategy_tester.backtesting.optimization_params import OptimizationParams, OptimizationParamsBuilder
 
 
 def assert_params_equal(first: OptimizationParams, second: OptimizationParams):

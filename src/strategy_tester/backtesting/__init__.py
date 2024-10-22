@@ -4,6 +4,11 @@ Module with the wrapper function of Backtestinp.py library and it's helper funct
 You cand find:\n
 
 + `.pipeline` module with default pipelines and their helper methods\n
-+ `run_backtest` to perform a backtest for the strategy, see `.backtest.run_backtest`\n
-+ `saving` module with backtest result saving functions, see `.saving`\n
++ `.plot` module with plotting helper methods\n
++ `.report` module with helper methods to generate pdf/html report\n
++ `.backtest` module with the function to backtest your strategy\n
++ `.broker_params` module with the broker params utilities\n
++ `.optimization_params` module with the optimization params utilities\n
++ `.optimization` module with the function to optimize your strategy\n
++ `.saving` module with backtest result saving functions\n
 """

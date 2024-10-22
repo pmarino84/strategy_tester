@@ -1,7 +1,9 @@
 import pandas as pd
+
 from .utils import assert_offset_values, resample_offset_to_field_name
 
-def _get_profits_losses_bars(data_pnl: pd.Series, offset: str):
+
+def _get_profits_losses_bars(data_pnl: pd.Series, offset: str) -> pd.DataFrame:
   if data_pnl.empty:
     return pd.DataFrame({
     "profits": [],
@@ -38,7 +40,7 @@ def _get_profits_losses_bars(data_pnl: pd.Series, offset: str):
 
   return unified
 
-def get_profits_losses_by_hour(data_pnl: pd.Series):
+def get_profits_losses_by_hour(data_pnl: pd.Series) -> pd.DataFrame:
   """
   Aggregate profits/losses by hour as pandas DataFrame.
 
@@ -50,7 +52,7 @@ def get_profits_losses_by_hour(data_pnl: pd.Series):
   """
   return _get_profits_losses_bars(data_pnl, "H")
 
-def get_profits_losses_by_dayofweek(data_pnl: pd.Series):
+def get_profits_losses_by_dayofweek(data_pnl: pd.Series) -> pd.DataFrame:
   """
   Aggregate profits/losses by day of week as pandas DataFrame.
 
@@ -62,7 +64,7 @@ def get_profits_losses_by_dayofweek(data_pnl: pd.Series):
   """
   return _get_profits_losses_bars(data_pnl, "D")
 
-def get_profits_losses_by_month(data_pnl: pd.Series):
+def get_profits_losses_by_month(data_pnl: pd.Series) -> pd.DataFrame:
   """
   Aggregate profits/losses by month as pandas DataFrame.
 
