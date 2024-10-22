@@ -311,7 +311,7 @@ def send_report_to_telegram_chat(context: Context):
     async def notify():
       await context.telegram_bot.send_message(context.telegram_chat_id, _build_notification_message(context))
       await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.pdf")
-      await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.html")
+      # await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.html")
     asyncio.run(notify())
 
 def save_strategy_params_as_text(context: Context):
