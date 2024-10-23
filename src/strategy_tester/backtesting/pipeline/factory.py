@@ -42,6 +42,7 @@ def create_backtest_pipeline(load_data,
   + send the notification to telegram\n
   """
   return pipe(
+    add_start_time,
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
@@ -56,6 +57,7 @@ def create_backtest_pipeline(load_data,
     save_backtest_result,
     save_report_to_pdf,
     save_report_to_html,
+    add_end_time,
     send_report_to_telegram_chat)
 
 # TODO: con le metriche profits/losses by time opened provare a mostrare il timedelta
@@ -100,6 +102,7 @@ def create_backtest_pipeline_with_metrics(load_data,
   + send the notification to telegram\n
   """
   return pipe(
+    add_start_time,
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
@@ -121,6 +124,7 @@ def create_backtest_pipeline_with_metrics(load_data,
     save_metrics_result,
     save_report_to_pdf,
     save_report_to_html,
+    add_end_time,
     send_report_to_telegram_chat)
 
 def create_optimization_pipeline(
@@ -166,6 +170,7 @@ def create_optimization_pipeline(
   + send the notification to telegram\n
   """
   return pipe(
+    add_start_time,
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
@@ -184,6 +189,7 @@ def create_optimization_pipeline(
     save_optimization_result,
     save_report_to_pdf,
     save_report_to_html,
+    add_end_time,
     send_report_to_telegram_chat)
 
 def create_optimization_pipeline_with_metrics(
@@ -233,6 +239,7 @@ def create_optimization_pipeline_with_metrics(
   + send the notification to telegram\n
   """
   return pipe(
+    add_start_time,
     get_add_asset_name(asset_name),
     get_add_strategy_name(strategy_name),
     get_add_broker_params(broker_params),
@@ -257,4 +264,5 @@ def create_optimization_pipeline_with_metrics(
     save_metrics_result,
     save_report_to_pdf,
     save_report_to_html,
+    add_end_time,
     send_report_to_telegram_chat)
