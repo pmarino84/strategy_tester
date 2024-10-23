@@ -22,7 +22,6 @@ doc/build/*
 
 .venv/
 
-example/
 results/
 .env
 .pytest_cache
