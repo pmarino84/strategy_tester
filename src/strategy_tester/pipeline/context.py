@@ -1,3 +1,5 @@
+from datetime import datetime
+import time
 from typing import Any, Dict, Optional, Union
 
 import pandas as pd
@@ -43,6 +45,8 @@ class Context:
   
   `telegram_bot` (TelegramBot): [optional] Telegram Bot instance
   """
+  start_time: Optional[time.time]
+  end_time: Optional[time.time]
   asset_name: Optional[str]
   strategy_name: Optional[str]
   data: Optional[pd.DataFrame]
@@ -59,6 +63,8 @@ class Context:
   telegram_chat_id: Optional[Union[str, int]]
   telegram_bot: Optional[TelegramBot]
   def __init__(self) -> None:
+    self.start_time = 0
+    self.end_time = 0
     self.asset_name = None
     self.strategy_name = None
     self.data = None

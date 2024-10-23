@@ -1,6 +1,7 @@
 import asyncio
 import os
 from datetime import datetime
+import time
 from typing import Optional
 
 import pandas as pd
@@ -266,6 +267,7 @@ def save_report_to_html(context: Context):
   return context
 
 def _build_notification_message(context: Context):
+  elapsed_time = context.end_time - context.start_time
   asset_name = context.asset_name or "N/A"
   strategy_name = context.strategy_name or context.strategy.__name__
   stats = context.stats
@@ -280,7 +282,7 @@ def _build_notification_message(context: Context):
   
   stats_str = "\n".join(statistics)
 
-  msg = f"{strategy_name} strategy test on {asset_name} finished\n\nStatistics:\n{stats_str}"
+  msg = f"{strategy_name} strategy test on {asset_name} finished in {elapsed_time}s \n\nStatistics:\n{stats_str}"
   
   if isinstance(context.optimization_params, OptimizationParams):
     strategy_better_params = []
@@ -397,3 +399,12 @@ def save_optimization_params_as_text(context: Context):
     file.write(text)
   return context
 
+def add_start_time(context: Context):
+  """Add pipeline start time"""
+  context.start_time = time.time()
+  return context
+
+def add_end_time(context: Context):
+  """Add pipeline end time"""
+  context.end_time = time.time()
+  return context
