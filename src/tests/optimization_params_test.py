@@ -1,4 +1,5 @@
 import pytest
+
 from strategy_tester.backtesting.optimization_params import OptimizationParams, OptimizationParamsBuilder
 
 

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ...strategy_tester.pipeline.context import Context
+from ..pipeline.context import Context
 from ..utils.files import create_file_suffix
 
 

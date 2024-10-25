@@ -1,4 +1,4 @@
-from ...strategy_tester.pipeline.context import Context
+from ..pipeline.context import Context
 
 
 def log(context: Context, message: str, level: str = "INFO"):
