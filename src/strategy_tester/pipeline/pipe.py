@@ -2,7 +2,9 @@ import asyncio
 import traceback
 from typing import Callable
 
+from ..utils.log import log
 from .context import Context
+
 
 class Pipeline:
   """
@@ -28,12 +30,7 @@ class Pipeline:
     
     for job in self._jobs:
       try:
-        # TODO: finché non viene chiamato il job per registrare il nome dell'asset e della strategia
-        # essi non si possono usare per il log, trovare soluzione!!!
-        asset_name = context.asset_name or "N/A"
-        strategy_name = context.strategy_name or (context.strategy and context.strategy.__name__ )or "N/A"
-        if asset_name != "N/A" and strategy_name != "N/A":
-          print(f"[{strategy_name}][{asset_name}] Running job {job.__name__}...")
+        log(context, f"Running job {job.__name__}")
         context = job(context)
       except Exception as ex:
         traceback.print_exc()
@@ -42,13 +39,13 @@ class Pipeline:
           asset_name = context.asset_name or "N/A"
           strategy_name = context.strategy_name or context.strategy.__name__
           message = f"Failed to test strategy {strategy_name} with asset {asset_name} Error:\n {stack_trace}"
-          print(f"[{strategy_name}][{asset_name}] Send notification error for asset {asset_name} to chat id `{context.telegram_chat_id}`")
+          log(context, f"Send notification error for asset {asset_name} to chat id `{context.telegram_chat_id}`")
           try:
             async def notify():
               await context.telegram_bot.send_message(context.telegram_chat_id, message)
             asyncio.run(notify())
           except:
-            print(f"[{strategy_name}][{asset_name}] Can't send error messaget to Telegram chat")
+            log(context, f"Can't send error messaget to Telegram chat", "ERROR")
             traceback.print_exc()
         break
     return context
