@@ -218,7 +218,7 @@ def save_backtest_result(context: Context):
   """
   Save the backtest results on files
   """
-  save_backtest_results(context.stats, context.result_folder)
+  save_backtest_results(context)
   return context
 
 def save_metrics_result(context: Context):

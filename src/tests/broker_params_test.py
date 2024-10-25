@@ -2,6 +2,7 @@ import pytest
 
 from strategy_tester.backtesting.broker_params import BrokerParamsBuilder
 
+
 def test_set_cash_raise_error():
   with pytest.raises(Exception):
     BrokerParamsBuilder().set_cash(0)

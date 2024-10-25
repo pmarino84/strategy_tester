@@ -1,1 +1,1 @@
-__all__ = ["files", "list", "parsers", "strategy_params"]
+__all__ = ["files", "list", "log", "parsers", "strategy_params"]
