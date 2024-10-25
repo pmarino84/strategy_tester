@@ -10,7 +10,7 @@ from .assets import assets
 from .pipeline import create_pipeline
 
 # use the following command to run the example:
-# python3 -m src.examples.multi_asset.bollinger_bands_swing.optimization
+# python3 -m src.examples.multi_asset.bollinger_bands_swing_cross.optimization
 
 ENV = dotenv_values(f"{os.getcwd()}/.env")
 

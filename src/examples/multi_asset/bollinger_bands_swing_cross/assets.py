@@ -1,7 +1,7 @@
 from os import getcwd
 
 DATA_PARENT_FOLDER = f"{getcwd()}/src/examples/data/forex"
-RESULTS_PARENT_FOLDER = f"{getcwd()}/src/examples/multi_asset/bollinger_bands_swing"
+RESULTS_PARENT_FOLDER = f"{getcwd()}/src/examples/multi_asset/bollinger_bands_swing_cross"
 
 assets = {}
 

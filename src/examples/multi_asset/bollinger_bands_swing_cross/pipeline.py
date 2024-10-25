@@ -1,6 +1,7 @@
 import pandas as pd
 import pandas_ta as ta
 from backtesting import Strategy
+from backtesting.lib import crossover
 
 from ....strategy_tester.backtesting.broker_params import BrokerParams
 from ....strategy_tester.backtesting.optimization_params import OptimizationParams
@@ -97,8 +98,8 @@ def create_strategy(context: Context):
         sl_delta = self._atr[-1] * self.sl_atr_multiplier
         close_price = self.data["Close"][-1]
 
-        bb_long_signal = close_price < self._lowerBollingerBand[-1]
-        bb_short_signal = close_price > self._upperBollingerBand[-1]
+        bb_long_signal = crossover(self.data["Close"], self._lowerBollingerBand)
+        bb_short_signal = crossover(self._upperBollingerBand, self.data["Close"])
 
         lot_size = self.calc_lot_size(close_price, sl_delta)
 
