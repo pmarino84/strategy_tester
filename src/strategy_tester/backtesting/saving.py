@@ -81,7 +81,8 @@ def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") ->
   file_name = f"{parent_folder}/heatmap{file_suffix}.csv"
   heatmap.to_csv(file_name)
 
-def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") -> None:
+# def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") -> None:
+def save_optimization_results(context: Context, file_suffix = "") -> None:
   """
   Save the statistics, heatmap, equity curve and trades on files.
 
@@ -90,5 +91,5 @@ def save_optimization_results(stats: pd.Series, heatmap: pd.DataFrame, parent_fo
   `parent_folder` folder where to save the file\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  save_backtest_results(stats, parent_folder, file_suffix)
-  save_heatmap(heatmap, parent_folder, file_suffix)
+  save_backtest_results(context, file_suffix)
+  save_heatmap(context.heatmap, context.result_folder, file_suffix)

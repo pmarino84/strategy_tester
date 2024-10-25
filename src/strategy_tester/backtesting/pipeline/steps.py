@@ -378,7 +378,7 @@ def save_optimization_result(context: Context):
   """
   Save the backtest results on files
   """
-  save_optimization_results(context.stats, context.heatmap, context.result_folder)
+  save_optimization_results(context)
   return context
 
 def save_optimization_params_as_text(context: Context):

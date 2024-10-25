@@ -56,7 +56,7 @@ def create_backtest_pipeline(load_data,
     save_broker_params,
     save_backtest_result,
     save_report_to_pdf,
-    save_report_to_html,
+    # save_report_to_html,
     add_end_time,
     send_report_to_telegram_chat)
 
@@ -123,7 +123,7 @@ def create_backtest_pipeline_with_metrics(load_data,
     save_backtest_result,
     save_metrics_result,
     save_report_to_pdf,
-    save_report_to_html,
+    # save_report_to_html,
     add_end_time,
     send_report_to_telegram_chat)
 
@@ -188,7 +188,7 @@ def create_optimization_pipeline(
     save_optimization_params_as_text,
     save_optimization_result,
     save_report_to_pdf,
-    save_report_to_html,
+    # save_report_to_html,
     add_end_time,
     send_report_to_telegram_chat)
 
@@ -263,6 +263,6 @@ def create_optimization_pipeline_with_metrics(
     save_optimization_result,
     save_metrics_result,
     save_report_to_pdf,
-    save_report_to_html,
+    # save_report_to_html,
     add_end_time,
     send_report_to_telegram_chat)
