@@ -14,7 +14,10 @@ def save_equity(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
   file_suffix = create_file_suffix(file_suffix)
   equity_file_name = f"{parent_folder}/equity{file_suffix}.csv"
-  stats["_equity_curve"].to_csv(equity_file_name)
+  equity_curve = stats["_equity_curve"].copy()
+  equity_curve.reset_index(inplace=True)
+  equity_curve.rename(columns={ "index": "Date" }, inplace=True)
+  equity_curve.to_csv(equity_file_name, index=False)
 
 def save_statistics_to_json(stats: pd.Series, parent_folder: str, file_suffix = "") -> None:
   """
