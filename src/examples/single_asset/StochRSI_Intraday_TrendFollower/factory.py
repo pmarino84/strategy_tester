@@ -16,7 +16,7 @@ def process_data_with_fraction_unit(context: Context):
 
 def process_trades_with_fraction_unit(context: Context):
   fraction_unit = context.custom["fraction_unit"]
-  trades = context.custom["trades_copy"]
+  trades = context.custom["trades"]
   trades["EntryPrice"] *= fraction_unit
   trades["ExitPrice"] *= fraction_unit
   trades["Size"]/= fraction_unit
@@ -51,11 +51,6 @@ def create_backtest_pipeline_with_metrics_and_fractional_units(load_data,
     calc_metrics_step_4_of_5,
     calc_metrics_step_5_of_5,
     get_create_results_folder_fn(results_folder_path),
-    save_strategy_params_as_text,
-    save_broker_params,
-    save_backtest_result,
-    save_metrics_result,
     save_report_to_pdf,
-    save_report_to_html,
     add_end_time,
     send_report_to_telegram_chat)

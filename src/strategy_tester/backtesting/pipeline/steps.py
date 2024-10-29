@@ -1,4 +1,5 @@
 import asyncio
+import os
 import time
 from datetime import datetime
 from typing import Optional
@@ -7,10 +8,6 @@ import pandas as pd
 
 from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
-from ...backtesting.report.streamlit.create_webapp import \
-    create_streamlit_webapp
-from ...backtesting.saving import (save_backtest_results,
-                                   save_optimization_results)
 from ...metrics.entries_counts import (get_entries_by_dayofweek,
                                        get_entries_by_hour,
                                        get_entries_by_month)
@@ -25,8 +22,8 @@ from ...metrics.profits_losses_mean import (
 from ...metrics.profits_losses_sum import (get_profits_losses_sum_by_dayofweek,
                                            get_profits_losses_sum_by_hour,
                                            get_profits_losses_sum_by_month)
-from ...metrics.save import save_metrics
 from ...pipeline.context import Context
+from ...storage.save_dataframe import save_dataframe_as_csv
 from ...telegram.bot import TelegramBot
 from ...utils.files import create_folder_if_not_exist
 from ...utils.strategy_params import get_strategy_params
@@ -135,22 +132,24 @@ def strategy_optimization(context: Context):
 
 def copy_trades_table(context: Context):
   """
-  Copy the trades table from backtest statistics result to the pipeline context.
-  Before, convert "EntryTime" and "ExitTime" columns to `pd.Datetime` type and add the column "BarCount" to simplify some metrics calculations.
+  Copy the trades table from backtest statistics result inside the custom property of the pipeline context.
+  There is 2 copies, one with RangeIndex called 'trades' and one with the 'EntryTime' column as index called 'trades_indexed'.
+  Before, convert 'EntryTime' and 'ExitTime' columns to `pd.Datetime` type and add the column "BarCount" to simplify some metrics calculations.
   """
   trades = context.stats["_trades"].copy()
   trades["EntryTime"] = pd.to_datetime(trades["EntryTime"])
   trades["ExitTime"] = pd.to_datetime(trades["ExitTime"])
   trades["BarsCount"] = trades["ExitBar"] - trades["EntryBar"]
-  trades.set_index("EntryTime", inplace=True)
-  context.custom["trades_copy"] = trades
+  context.custom["trades"] = trades
+  context.custom["trades_indexed"] = trades.copy()
+  context.custom["trades_indexed"].set_index("EntryTime", inplace=True)
   return context
 
 def calc_metrics_step_1_of_5(context: Context):
   """
   Calculate the profits/losses sum by hour/day of week/month and add it to the pipeline context
   """
-  trades_pnl = context.custom["trades_copy"]["PnL"]
+  trades_pnl = context.custom["trades_indexed"]["PnL"]
   context.metrics["profits_losses_sum_by_hour"] = get_profits_losses_sum_by_hour(trades_pnl)
   context.metrics["profits_losses_sum_by_dow"] = get_profits_losses_sum_by_dayofweek(trades_pnl)
   context.metrics["profits_losses_sum_by_month"] = get_profits_losses_sum_by_month(trades_pnl)
@@ -160,7 +159,7 @@ def calc_metrics_step_2_of_5(context: Context):
   """
   Calculate the profits/losses by hour/day of week/month and add it to the pipeline context
   """
-  trades_pnl = context.custom["trades_copy"]["PnL"]
+  trades_pnl = context.custom["trades_indexed"]["PnL"]
   context.metrics["profits_losses_by_hour"] = get_profits_losses_by_hour(trades_pnl)
   context.metrics["profits_losses_by_dow"] = get_profits_losses_by_dayofweek(trades_pnl)
   context.metrics["profits_losses_by_month"] = get_profits_losses_by_month(trades_pnl)
@@ -170,7 +169,7 @@ def calc_metrics_step_3_of_5(context: Context):
   """
   Calculate the entries count by hour/day of week/month and add it to the pipeline context
   """
-  trades_pnl = context.custom["trades_copy"]["PnL"]
+  trades_pnl = context.custom["trades_indexed"]["PnL"]
   context.metrics["entries_by_hour"] = get_entries_by_hour(trades_pnl)
   context.metrics["entries_by_dow"] = get_entries_by_dayofweek(trades_pnl)
   context.metrics["entries_by_month"] = get_entries_by_month(trades_pnl)
@@ -180,7 +179,7 @@ def calc_metrics_step_4_of_5(context: Context):
   """
   Calculate the profits/losses mean by hour/day of week/month and add it to the pipeline context
   """
-  trades_pnl = context.custom["trades_copy"]["PnL"]
+  trades_pnl = context.custom["trades_indexed"]["PnL"]
   context.metrics["profits_losses_mean_by_hour"] = get_profits_losses_mean_by_hour(trades_pnl)
   context.metrics["profits_losses_mean_by_dow"] = get_profits_losses_mean_by_dayofweek(trades_pnl)
   context.metrics["profits_losses_mean_by_month"] = get_profits_losses_mean_by_month(trades_pnl)
@@ -190,7 +189,7 @@ def calc_metrics_step_5_of_5(context: Context):
   """
   Calculate the profits/losses by bar count opened and add it to the pipeline context
   """
-  trades = context.custom["trades_copy"]
+  trades = context.custom["trades_indexed"]
   context.metrics["profits_by_time_opened"] = get_profits_by_time_opened(trades)
   context.metrics["losses_by_time_opened"] = get_losses_by_time_opened(trades)
   return context
@@ -214,44 +213,6 @@ def get_create_results_folder_fn(parent_folder: str):
     create_folder_if_not_exist(results_folder_path)
     return context
   return create_results_folder
-
-def save_backtest_result(context: Context):
-  """
-  Save the backtest results on files
-  """
-  save_backtest_results(context)
-  return context
-
-def save_metrics_result(context: Context):
-  """
-  Save the calculated metrics on csv files
-  """
-  profits_losses_sum_by_hour = context.metrics["profits_losses_sum_by_hour"]
-  profits_losses_sum_by_dow = context.metrics["profits_losses_sum_by_dow"]
-  profits_losses_sum_by_month = context.metrics["profits_losses_sum_by_month"]
-
-  profits_losses_by_hour = context.metrics["profits_losses_by_hour"]
-  profits_losses_by_dow = context.metrics["profits_losses_by_dow"]
-  profits_losses_by_month = context.metrics["profits_losses_by_month"]
-
-  entries_by_hour = context.metrics["entries_by_hour"]
-  entries_by_dow = context.metrics["entries_by_dow"]
-  entries_by_month = context.metrics["entries_by_month"]
-
-  profits_losses_mean_by_hour = context.metrics["profits_losses_mean_by_hour"]
-  profits_losses_mean_by_dow = context.metrics["profits_losses_mean_by_dow"]
-  profits_losses_mean_by_month = context.metrics["profits_losses_mean_by_month"]
-
-  profits_by_time_opened = context.metrics["profits_by_time_opened"]
-  losses_by_time_opened = context.metrics["losses_by_time_opened"]
-
-  save_metrics(entries_by_hour, entries_by_dow, entries_by_month,
-              profits_losses_by_hour, profits_losses_by_dow, profits_losses_by_month,
-              profits_losses_mean_by_hour, profits_losses_mean_by_dow, profits_losses_mean_by_month,
-              profits_losses_sum_by_hour, profits_losses_sum_by_dow, profits_losses_sum_by_month,
-              profits_by_time_opened, losses_by_time_opened,
-              context.result_folder)
-  return context
 
 def save_report_to_pdf(context: Context):
   """
@@ -317,69 +278,12 @@ def send_report_to_telegram_chat(context: Context):
       # await context.telegram_bot.send_document(context.telegram_chat_id, f"{context.result_folder}/report.html")
     asyncio.run(notify())
 
-def save_strategy_params_as_text(context: Context):
-  """
-  Save the strategy params on a text file
-  """
-  params = get_strategy_params(context.strategy)
-  max_length = max(len(key) for key in params.keys())
-  text = "Strategy params:"
-  for param_name, param_value in params.items():
-    key = param_name.ljust(max_length, ' ')
-    value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
-    text += f"\n{key} = {value}"
-  
-  with open(f"{context.result_folder}/strategy_params.txt", encoding="utf-8", mode="w+") as file:
-    file.write(text)
-  return context
-
-def save_strategy_better_params_as_text(context: Context):
-  """
-  Save the strategy params on a text file
-  """
-  params = get_strategy_params(context.strategy)
-  max_length = max(len(key) for key in params.keys())
-  text = "Strategy params:"
-  for param_name, param_value in params.items():
-    if param_name in context.strategy_params_to_optimize:
-      key = param_name.ljust(max_length, ' ')
-      value = param_value.isoformat() if isinstance(param_value, pd.Timedelta) else param_value
-      text += f"\n{key} = {value}"
-  
-  with open(f"{context.result_folder}/strategy_better_params.txt", encoding="utf-8", mode="w+") as file:
-    file.write(text)
-  return context
-
-def save_broker_params(context: Context):
-  """
-  Save the broker params on a text file
-  """
-  parent_folder = context.result_folder
-  params = context.broker_params
-  text = "Broker params:"
-  text += f"\ncash             = {params.cash}"
-  text += f"\ncommission       = {params.commission}"
-  text += f"\nmargin           = {params.margin}"
-  text += f"\ntrades_on_close  = {params.trade_on_close}"
-  text += f"\nhedging          = {params.hedging}"
-  text += f"\nexclusive_orders = {params.exclusive_orders}"
-  with open(f"{parent_folder}/broker_params.txt", encoding="utf-8", mode="w+") as file:
-    file.write(text)
-  return context
-
 def check_trades_available(context: Context):
   """
   Check if there is trades, if not raise an Error to interrupt the pipeline execution.
   """
   if context.stats["_trades"].empty:
     raise IndexError("No trades found")
-  return context
-
-def save_optimization_result(context: Context):
-  """
-  Save the backtest results on files
-  """
-  save_optimization_results(context)
   return context
 
 def save_optimization_params_as_text(context: Context):
@@ -410,5 +314,12 @@ def add_end_time(context: Context):
   context.end_time = time.time()
   return context
 
-def save_streamlit_webapp(context: Context):
-  return create_streamlit_webapp(context)
+def save_data(context: Context):
+  save_dataframe_as_csv(context.stats["_equity_curve"], context.result_folder, "equity_curve.csv", reset_index=True, index_name="Date")
+  save_dataframe_as_csv(context.custom["trades"], context.result_folder, "trades.csv")
+  stats_columns = [x for x in context.stats.index if x not in ["_strategy", "_equity_curve", "_trades"]]
+  save_dataframe_as_csv(pd.DataFrame(context.stats).T, context.result_folder, "stats.csv", columns=stats_columns)
+  if context.heatmap.empty:
+    return context
+  context.heatmap.to_csv(os.path.join(context.result_folder, "heatmap.csv"))
+  return context
