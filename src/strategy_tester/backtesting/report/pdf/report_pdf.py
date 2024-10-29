@@ -8,7 +8,7 @@ from ._add_metrics import _add_metrics
 from ._add_pnl_distribution import _add_pnl_distribution
 from ._add_statistics import _add_statistics
 
-
+# TODO: add Asset name, Strategy name, broker params, optimization params, (better) strategy params
 def report_to_pdf(context: Context, pdf_title = "", author = "", subject = "", keyworkds = ""):
   """
   Save backtest/optimization pipeline result as pdf report.

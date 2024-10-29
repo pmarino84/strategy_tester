@@ -288,12 +288,11 @@ _STYLE_CODE = """
   }
 """
 
-def report_to_html(context: Context, file_suffix: str = ""):
+def report_to_html(context: Context):
   """
   Save the result statistics and metrics as html page report.
 
   `context` Context of the pipeline, see `strategy_tester.pipeline.context.Context`\n
-  `file_suffix` file name suffix to customize it's name\n
   """
   stats = context.stats
 
@@ -467,6 +466,5 @@ def report_to_html(context: Context, file_suffix: str = ""):
     </body>
   """
 
-  file_suffix = '_' + file_suffix if file_suffix != "" else ""
-  with open(f"{context.result_folder}/report{file_suffix}.html", "w", encoding="utf-8") as file:
+  with open(f"{context.result_folder}/report.html", "w", encoding="utf-8") as file:
     file.write(html)

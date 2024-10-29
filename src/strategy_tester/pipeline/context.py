@@ -52,7 +52,7 @@ class Context:
   data: Optional[pd.DataFrame]
   strategy: Optional[Strategy]
   stats: Optional[pd.Series]
-  heatmap: Optional[pd.Series]
+  heatmap: Optional[pd.DataFrame]
   bt: Optional[Backtest]
   metrics: Dict[str, Union[pd.DataFrame, pd.Series]]
   custom: Dict[str, Any]
@@ -67,10 +67,10 @@ class Context:
     self.end_time = 0
     self.asset_name = None
     self.strategy_name = None
-    self.data = None
+    self.data = pd.DataFrame()
     self.strategy = None
-    self.stats = None
-    self.heatmap = None
+    self.stats = pd.Series()
+    self.heatmap = pd.DataFrame()
     self.metrics = {}
     self.custom = {}
     self.result_folder = None
