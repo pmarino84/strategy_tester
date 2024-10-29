@@ -48,7 +48,7 @@ def save_statistics_to_csv(stats: pd.Series, parent_folder: str, file_suffix = "
   stats_filtered.drop(columns=["_strategy", "_equity_curve", "_trades"], inplace=True)
   stats_filtered.to_csv(stats_file_name, index=False)
 
-def save_trades(context: Context, file_suffix = "") -> None:
+def save_trades(context: Context, folder: str = "", file_suffix = "") -> None:
   """
   Save the trades as csv
 
@@ -56,20 +56,40 @@ def save_trades(context: Context, file_suffix = "") -> None:
   `file_suffix` file name suffix to customize it's name\n
   """
   file_suffix = create_file_suffix(file_suffix)
-  trades_file_name = f"{context.result_folder}/trades{file_suffix}.csv"
+  result_folder = context.result_folder
+  if folder != "":
+    result_folder += f"/{folder}"
+  trades_file_name = f"{result_folder}/trades{file_suffix}.csv"
   trades = context.custom["trades_copy"]
   trades.to_csv(trades_file_name, index=False)
 
-def save_backtest_results(context: Context, file_suffix = "") -> None:
+def save_ohlcv_data(ohlcv: pd.DataFrame, parent_folder: str, file_suffix: str = "") -> None:
+  """
+  Save the OHLCV data as csv
+
+  `ohlcv` data to save `pd.DataFrame`\n
+  `parent_folder` folder where to save the file\n
+  `file_suffix` file name suffix to customize it's name\n
+  """
+  file_suffix = create_file_suffix(file_suffix)
+  file_name = f"{parent_folder}/ohlcv{file_suffix}.csv"
+  ohlcv.reset_index(inplace=True)
+  ohlcv.rename(columns={ "index": "Date" }, inplace=True)
+  ohlcv.to_csv(file_name, index=False)
+
+def save_backtest_results(context: Context, folder: str = "", file_suffix: str = "") -> None:
   """
   Save the statistics, equity curve and trades on files.
 
   `context` Pipeline context\n
   `file_suffix` file name suffix to customize it's name\n
   """
-  save_equity(context.stats, context.result_folder, file_suffix)
-  save_statistics_to_json(context.stats, context.result_folder, file_suffix)
-  save_statistics_to_csv(context.stats, context.result_folder, file_suffix)
+  result_folder = context.result_folder
+  if folder != "":
+    result_folder += f"/{folder}"
+  save_equity(context.stats, result_folder, file_suffix)
+  save_statistics_to_json(context.stats, result_folder, file_suffix)
+  save_statistics_to_csv(context.stats, result_folder, file_suffix)
   save_trades(context, file_suffix)
 
 def save_heatmap(heatmap: pd.DataFrame, parent_folder: str, file_suffix = "") -> None:

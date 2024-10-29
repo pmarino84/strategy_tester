@@ -1,13 +1,14 @@
 import asyncio
-import os
-from datetime import datetime
 import time
+from datetime import datetime
 from typing import Optional
 
 import pandas as pd
 
 from ...backtesting.backtest import run_backtest
 from ...backtesting.optimization import run_optimization
+from ...backtesting.report.streamlit.create_webapp import \
+    create_streamlit_webapp
 from ...backtesting.saving import (save_backtest_results,
                                    save_optimization_results)
 from ...metrics.entries_counts import (get_entries_by_dayofweek,
@@ -27,6 +28,7 @@ from ...metrics.profits_losses_sum import (get_profits_losses_sum_by_dayofweek,
 from ...metrics.save import save_metrics
 from ...pipeline.context import Context
 from ...telegram.bot import TelegramBot
+from ...utils.files import create_folder_if_not_exist
 from ...utils.strategy_params import get_strategy_params
 from ..broker_params import BrokerParams
 from ..optimization_params import OptimizationParams
@@ -209,8 +211,7 @@ def get_create_results_folder_fn(parent_folder: str):
   def create_results_folder(context: Context):
     results_folder_path = f"{parent_folder}/{_format_current_datetime()}"
     context.result_folder = results_folder_path
-    if not os.path.exists(results_folder_path):
-      os.makedirs(results_folder_path)
+    create_folder_if_not_exist(results_folder_path)
     return context
   return create_results_folder
 
@@ -408,3 +409,6 @@ def add_end_time(context: Context):
   """Add pipeline end time"""
   context.end_time = time.time()
   return context
+
+def save_streamlit_webapp(context: Context):
+  return create_streamlit_webapp(context)
