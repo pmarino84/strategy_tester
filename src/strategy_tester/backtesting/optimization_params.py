@@ -71,6 +71,16 @@ class OptimizationParams:
     self.return_heatmap = return_heatmap
     self.return_optimization = return_optimization
     self.random_state = random_state
+  
+  def to_text_list(self):
+    text_list = []
+    text_list.append(f"Maximize: {self.maximize}")
+    text_list.append(f"Method: {self.method}")
+    text_list.append(f"Max_tries: {self.max_tries}")
+    text_list.append(f"Return_heatmap: {self.return_heatmap}")
+    text_list.append(f"Return_optimization: {self.return_optimization}")
+    text_list.append(f"Random_state: {self.random_state}")
+    return text_list
 
 class OptimizationParamsBuilder:
   """Optimization params builder"""

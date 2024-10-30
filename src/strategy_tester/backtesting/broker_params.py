@@ -26,6 +26,16 @@ class BrokerParams:
 
   def __str__(self) -> str:
     return f"<BrokerParams (cash={self.cash}, commission={self.commission}, margin={self.margin}, trade_on_close={self.trade_on_close}, hedging={self.hedging}, exclusive_orders={self.exclusive_orders})>"
+  
+  def to_text_list(self):
+    text_list = []
+    text_list.append(f"Cash: {self.cash}")
+    text_list.append(f"Commission: {self.commission}")
+    text_list.append(f"Margin: {self.margin}")
+    text_list.append(f"Trade on close: {self.trade_on_close}")
+    text_list.append(f"Hedging: {self.hedging}")
+    text_list.append(f"Exclusive orders: {self.exclusive_orders}")
+    return text_list
 
 class BrokerParamsBuilder:
   """Broker params builder"""
