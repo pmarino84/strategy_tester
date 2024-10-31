@@ -9,18 +9,16 @@ from ....strategy_tester.backtesting.optimization_params import OptimizationPara
 from ....strategy_tester.pipeline import Context
 from ....strategy_tester.utils.log import log
 from .assets import assets
-from .pipeline import create_optimization_pipeline
+from .pipeline import create_backtest_pipeline
 
 # use the following command to run the example:
-# python3 -m src.examples.multi_asset.bollinger_bands_swing.optimization
+# python3 -m src.examples.multi_asset.bollinger_bands_swing.backtest
 
 ENV = dotenv_values(f"{os.getcwd()}/.env")
 
 STRATEGY_NAME = "Bollinger Bands Swing"
 
 BROKER_PARAMS = BrokerParamsBuilder().set_cash(2_000).set_margin(1/500).set_exclusive_orders(True).build()
-OPTIMIZATION_PARAMS = OptimizationParamsBuilder().set_maximize("Return [%]").set_max_tries(3000).build()
-# OPTIMIZATION_PARAMS = OptimizationParamsBuilder().set_maximize("Return [%]").build()
 
 def run(assets) -> None:
   for asset in assets:
@@ -31,10 +29,9 @@ def run(assets) -> None:
     context.asset_name    = asset_name
     context.strategy_name = STRATEGY_NAME
 
-    pipeline = create_optimization_pipeline(
+    pipeline = create_backtest_pipeline(
       asset_data,
       BROKER_PARAMS,
-      OPTIMIZATION_PARAMS,
       ENV["TELEGRAM_BOT_API_TOKEN"],
       int(ENV["TELEGRAM_CHAT_ID"]))
     log("Running the pipeline", STRATEGY_NAME, asset_name)
