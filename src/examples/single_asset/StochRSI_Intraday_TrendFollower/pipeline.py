@@ -5,8 +5,7 @@ from backtesting import Strategy
 from backtesting.backtesting import Trade
 
 from ....strategy_tester.backtesting.broker_params import BrokerParams
-# from ....strategy_tester.backtesting.pipeline.factory import create_backtest_pipeline_with_metrics
-from ....strategy_tester.pipeline.context import Context
+from ....strategy_tester.pipeline import Context, Pipeline
 from .factory import create_backtest_pipeline_with_metrics_and_fractional_units
 
 
@@ -81,24 +80,20 @@ def create_strategy(context: Context):
   context.strategy = StochasticRsiReversalStrategy
   return context
 
-def create_pipeline_backtest(
+def create_backtest_pipeline(
   data_file_path: str,
   datatime_column_name: str,
   datetime_format: str,
   results_parent_folder: str,
-  asset_name: str,
-  strategy_name: str,
   broker_params: BrokerParams,
   telegram_bot_token: str,
-  telegram_chat_id: str):
+  telegram_chat_id: str) -> Pipeline:
   return create_backtest_pipeline_with_metrics_and_fractional_units(
     create_load_data(data_file_path, datatime_column_name, datetime_format),
     create_strategy,
     results_parent_folder,
     fraction_unit=1e8, # One satoshi (1e-8 BTC)
     # fraction_unit=1e6, # One micro BTC (μBTC OHLC prices)
-    asset_name=asset_name,
-    strategy_name=strategy_name,
     broker_params= broker_params,
     telegram_bot_token=telegram_bot_token,
     telegram_chat_id=telegram_chat_id)

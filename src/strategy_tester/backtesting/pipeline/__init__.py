@@ -1,7 +1,8 @@
 """
-module with helper functions and default pipeline to execute strategy backtest.
+module with helper functions and default jobs to execute strategy backtest.
 
-Under `.steps` you can find dfault methods for the pipelines.
+Under `.steps` you can find default jobs for the pipelines.
 
-Under `.factory` you can find the default pipeline to backtest/optimize your strategy. This pipelines use the step functions on the `.steps` module.
+Under `.backtest` you can find the default jobs to backtest your strategy. This jobs use the step functions on the `.steps` module.
+Under `.optimization` you can find the default jobs to optimize your strategy. This jobs use the step functions on the `.steps` module.
 """

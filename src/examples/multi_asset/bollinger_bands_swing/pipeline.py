@@ -4,8 +4,8 @@ from backtesting import Strategy
 
 from ....strategy_tester.backtesting.broker_params import BrokerParams
 from ....strategy_tester.backtesting.optimization_params import OptimizationParams
-from ....strategy_tester.backtesting.pipeline.factory import create_optimization_pipeline_with_metrics
-from ....strategy_tester.pipeline.context import Context
+from ....strategy_tester.backtesting.pipeline.optimization import create_optimization_pipeline_with_metrics
+from ....strategy_tester.pipeline import Context, Pipeline
 
 
 def load_csv(file_path: str):
@@ -115,13 +115,11 @@ def create_strategy(context: Context):
   return context
 
 def create_pipeline(
-  asset_name: str,
   asset_data: dict,
-  strategy_name: str,
   broker_params: BrokerParams,
   optimization_params: OptimizationParams,
   telegram_bot_token: str,
-  telegram_chat_id: str):
+  telegram_chat_id: str) -> Pipeline:
   data_loader = asset_data["data_loader"]
   data_file_path = data_loader["file_path"]
   datatime_column_name = data_loader["datatime_column_name"]
@@ -134,8 +132,6 @@ def create_pipeline(
     create_load_data(data_file_path, datatime_column_name, datatime_format, data_loader["is_utc"]),
     create_strategy,
     asset_data["results_folder_path"],
-    asset_name=asset_name,
-    strategy_name=strategy_name,
     broker_params= broker_params,
     optimization_params=optimization_params,
     telegram_bot_token=telegram_bot_token,
