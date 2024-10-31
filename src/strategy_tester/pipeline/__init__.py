@@ -7,4 +7,4 @@ and the context used to pass all the information accross all the jobs see `.cont
 """
 
 from .context import Context
-from .pipe import pipe
+from .pipe import Pipeline

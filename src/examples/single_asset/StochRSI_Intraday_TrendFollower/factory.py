@@ -1,7 +1,7 @@
 from ....strategy_tester.backtesting.broker_params import BrokerParamsBuilder
 from ....strategy_tester.backtesting.pipeline.steps import *
-from ....strategy_tester.pipeline.pipe import Pipeline, pipe
-from ....strategy_tester.pipeline.context import Context
+from ....strategy_tester.pipeline import Context, Pipeline
+
 
 def get_add_fraction_unit(fraction_unit: float):
   def add_fraction_unit(context: Context):
@@ -22,21 +22,18 @@ def process_trades_with_fraction_unit(context: Context):
   trades["Size"]/= fraction_unit
   return context
 
-def create_backtest_pipeline_with_metrics_and_fractional_units(load_data,
-                                                               create_strategy,
-                                                               results_folder_path,
-                                                               fraction_unit: float = 1.0,
-                                                               asset_name: str = None,
-                                                               strategy_name: str = None,
-                                                               broker_params: BrokerParams = BrokerParamsBuilder().build(),
-                                                               telegram_bot_token: str = None,
-                                                               telegram_chat_id: str = None) -> Pipeline:
-  return pipe(
+def create_backtest_pipeline_with_metrics_and_fractional_units(
+  load_data,
+  create_strategy,
+  results_folder_path,
+  fraction_unit: float = 1.0,
+  broker_params: BrokerParams = BrokerParamsBuilder().build(),
+  telegram_bot_token: str = None,
+  telegram_chat_id: str = None) -> Pipeline:
+  return Pipeline([
     add_start_time,
-    get_add_asset_name(asset_name),
-    get_add_strategy_name(strategy_name),
-    get_add_broker_params(broker_params),
-    get_add_telegram_bot(telegram_bot_token, telegram_chat_id),
+    get_add_broker_params_job(broker_params),
+    get_add_telegram_bot_job(telegram_bot_token, telegram_chat_id),
     get_add_fraction_unit(fraction_unit),
     load_data,
     process_data_with_fraction_unit,
@@ -50,7 +47,8 @@ def create_backtest_pipeline_with_metrics_and_fractional_units(load_data,
     calc_metrics_step_3_of_5,
     calc_metrics_step_4_of_5,
     calc_metrics_step_5_of_5,
-    get_create_results_folder_fn(results_folder_path),
+    get_create_results_folder_job(results_folder_path),
+    save_data,
     save_report_to_pdf,
     add_end_time,
-    send_report_to_telegram_chat)
+    send_report_to_telegram_chat])

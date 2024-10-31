@@ -33,29 +33,7 @@ from ..report.html import report_to_html
 from ..report.pdf import report_to_pdf
 
 
-def get_add_asset_name(asset_name: str):
-  """
-  Return the function to add the given asset name to the pipeline context
-
-  `asset_name` name of the asset used in the strategy
-  """
-  def add_asset_name(context: Context):
-    context.asset_name = asset_name
-    return context
-  return add_asset_name
-
-def get_add_strategy_name(strategy_name: str):
-  """
-  Return the function to add the given strategy name to the pipeline context
-
-  `strategy_name` name of the strategy under backtest/optimization
-  """
-  def add_strategy_name(context: Context):
-    context.strategy_name = strategy_name
-    return context
-  return add_strategy_name
-
-def get_add_broker_params(broker_params: BrokerParams):
+def get_add_broker_params_job(broker_params: BrokerParams):
   """
   Return the function to add the given broker params to the pipeline context
 
@@ -66,7 +44,7 @@ def get_add_broker_params(broker_params: BrokerParams):
     return context
   return add_broker_params
 
-def get_add_optimization_params(optimization_params: OptimizationParams):
+def get_add_optimization_params_job(optimization_params: OptimizationParams):
   """
   Return the function to add the given optimization params to the pipeline context
 
@@ -77,7 +55,7 @@ def get_add_optimization_params(optimization_params: OptimizationParams):
     return context
   return add_optimization_params
 
-def get_add_strategy_params_to_optimize(strategy_params_to_optimize: dict):
+def get_add_strategy_params_to_optimize_job(strategy_params_to_optimize: dict):
   """
   Return the function to add the given optimization attributes to the pipeline context
 
@@ -88,7 +66,7 @@ def get_add_strategy_params_to_optimize(strategy_params_to_optimize: dict):
     return context
   return add_strategy_params_to_optimize
 
-def get_add_telegram_bot(bot_token: Optional[str], chat_id: Optional[str]):
+def get_add_telegram_bot_job(bot_token: Optional[str], chat_id: Optional[str]):
   """
   Return the function to add the telegram bot attributes to the pipeline context.
   If you don't pass anything the function only return the context
@@ -203,7 +181,7 @@ def _format_current_datetime():
     minute = str(current_datetime.minute).rjust(2, "0")
     return f"{year}{month}{day}{hour}{minute}"
 
-def get_create_results_folder_fn(parent_folder: str):
+def get_create_results_folder_job(parent_folder: str):
   """
   Return the function that create the folder where to store the result files and add it's path to the pipeline context
   """

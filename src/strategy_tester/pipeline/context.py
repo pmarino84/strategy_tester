@@ -45,10 +45,10 @@ class Context:
   
   `telegram_bot` (TelegramBot): [optional] Telegram Bot instance
   """
-  start_time: Optional[time.time]
-  end_time: Optional[time.time]
-  asset_name: Optional[str]
-  strategy_name: Optional[str]
+  start_time: time.time
+  end_time: time.time
+  asset_name: str
+  strategy_name: str
   data: Optional[pd.DataFrame]
   strategy: Optional[Strategy]
   stats: Optional[pd.Series]
@@ -62,7 +62,11 @@ class Context:
   strategy_params_to_optimize: Optional[dict]
   telegram_chat_id: Optional[Union[str, int]]
   telegram_bot: Optional[TelegramBot]
+  
   def __init__(self) -> None:
+    self.reset()
+  
+  def reset(self) -> None:
     self.start_time = 0
     self.end_time = 0
     self.asset_name = None

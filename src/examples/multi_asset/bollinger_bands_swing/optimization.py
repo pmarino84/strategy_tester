@@ -6,6 +6,8 @@ from dotenv import dotenv_values
 
 from ....strategy_tester.backtesting.broker_params import BrokerParamsBuilder
 from ....strategy_tester.backtesting.optimization_params import OptimizationParamsBuilder
+from ....strategy_tester.pipeline import Context
+from ....strategy_tester.utils.log import log
 from .assets import assets
 from .pipeline import create_pipeline
 
@@ -23,17 +25,19 @@ def run(assets) -> None:
   for asset in assets:
     asset_name = asset[0]
     asset_data = asset[1]
-    print(f"[{STRATEGY_NAME}][{asset_name}] Creating pipeline...")
+    log(f"[{STRATEGY_NAME}][{asset_name}] Creating pipeline...", STRATEGY_NAME, asset_name)
+    context = Context()
+    context.asset_name    = asset_name
+    context.strategy_name = STRATEGY_NAME
+
     pipeline = create_pipeline(
-      asset_name,
       asset_data,
-      STRATEGY_NAME,
       BROKER_PARAMS,
       OPTIMIZATION_PARAMS,
       ENV["TELEGRAM_BOT_API_TOKEN"],
       int(ENV["TELEGRAM_CHAT_ID"]))
-    print(f"[{STRATEGY_NAME}][{asset_name}] Running the pipeline...")
-    pipeline.run()
+    log(f"[{STRATEGY_NAME}][{asset_name}] Running the pipeline...", STRATEGY_NAME, asset_name)
+    pipeline.run(context)
 
 asset_list = list(assets.items())
 if __name__ == "__main__":
